@@ -22,6 +22,9 @@ import {
 } from '@/config/constants';
 import { scrapeCompanyInfo } from '@/lib/scrape-utils';
 
+// Force dynamic rendering - don't pre-render during build
+export const dynamic = 'force-dynamic';
+
 const autumn = new Autumn({
   secretKey: process.env.AUTUMN_SECRET_KEY!,
 });
