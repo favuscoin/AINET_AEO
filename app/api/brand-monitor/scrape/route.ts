@@ -11,8 +11,11 @@ import {
 } from '@/lib/api-errors';
 import { FEATURE_ID_MESSAGES } from '@/config/constants';
 
+// Force dynamic rendering - don't pre-render during build
+export const dynamic = 'force-dynamic';
+
 const autumn = process.env.AUTUMN_SECRET_KEY
-  ? new Autumn({ apiKey: process.env.AUTUMN_SECRET_KEY })
+  ? new Autumn({ secretKey: process.env.AUTUMN_SECRET_KEY })
   : null;
 
 export async function POST(request: NextRequest) {

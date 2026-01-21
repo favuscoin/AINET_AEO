@@ -1,5 +1,9 @@
 import { NextRequest } from 'next/server';
 import { auth } from '@/lib/auth';
+
+// Force dynamic rendering - don't pre-render during build
+export const dynamic = 'force-dynamic';
+
 import { Autumn } from 'autumn-js';
 import { performAnalysis, createSSEMessage } from '@/lib/analyze-common';
 import { SSEEvent } from '@/lib/types';
@@ -18,7 +22,7 @@ import {
 } from '@/config/constants';
 
 const autumn = process.env.AUTUMN_SECRET_KEY
-  ? new Autumn({ apiKey: process.env.AUTUMN_SECRET_KEY })
+  ? new Autumn({ secretKey: process.env.AUTUMN_SECRET_KEY })
   : null;
 
 export const runtime = 'nodejs'; // Use Node.js runtime for streaming
