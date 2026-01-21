@@ -20,13 +20,13 @@ function ChatContent({ session }: { session: any }) {
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [conversationToDelete, setConversationToDelete] = useState<string | null>(null);
-  
+
   // Queries and mutations
   const { data: conversations, isLoading: conversationsLoading } = useConversations();
   const { data: currentConversation } = useConversation(selectedConversationId);
   const sendMessage = useSendMessage();
   const deleteConversation = useDeleteConversation();
-  
+
   // Get message usage data
   const messageUsage = customer?.features?.messages;
   const remainingMessages = messageUsage ? (messageUsage.balance || 0) : 0;
@@ -48,25 +48,25 @@ function ChatContent({ session }: { session: any }) {
         conversationId: selectedConversationId,
         message: input,
       });
-      
+
       setInput('');
-      
+
       // If this created a new conversation, select it
       if (!selectedConversationId && response.conversationId) {
         setSelectedConversationId(response.conversationId);
       }
-      
+
       // Refetch customer data to update credits in navbar
       await refetch();
     } catch (error: any) {
       console.error('Failed to send message:', error);
     }
   };
-  
+
   const handleNewConversation = () => {
     setSelectedConversationId(null);
   };
-  
+
   const handleDeleteConversation = async (conversationId: string) => {
     setConversationToDelete(conversationId);
     setDeleteDialogOpen(true);
@@ -83,19 +83,19 @@ function ChatContent({ session }: { session: any }) {
   };
 
   return (
-    <div className="flex h-screen bg-gray-50">
+    <div className="flex bg-gray-50" style={{ height: 'calc(100vh - 65px)' }}>
       {/* Sidebar */}
       <div className={`${sidebarOpen ? 'w-64' : 'w-0'} bg-white border-r overflow-hidden flex flex-col transition-all duration-200`}>
         <div className="p-4 border-b">
           <Button
             onClick={handleNewConversation}
-            className="w-full btn-firecrawl-orange"
+            className="w-full btn-ainet-mint"
           >
             <Plus className="w-4 h-4 mr-2" />
             New Chat
           </Button>
         </div>
-        
+
         <div className="overflow-y-auto flex-1">
           {conversationsLoading ? (
             <div className="p-4 text-center text-gray-500">Loading conversations...</div>
@@ -106,9 +106,8 @@ function ChatContent({ session }: { session: any }) {
               {conversations?.map((conversation) => (
                 <div
                   key={conversation.id}
-                  className={`p-3 rounded-lg cursor-pointer hover:bg-gray-100 ${
-                    selectedConversationId === conversation.id ? 'bg-gray-100' : ''
-                  }`}
+                  className={`p-3 rounded-lg cursor-pointer hover:bg-gray-100 ${selectedConversationId === conversation.id ? 'bg-gray-100' : ''
+                    }`}
                   onClick={() => setSelectedConversationId(conversation.id)}
                 >
                   <div className="flex justify-between items-start">
@@ -136,13 +135,7 @@ function ChatContent({ session }: { session: any }) {
             </div>
           )}
         </div>
-        
-        <div className="p-4 border-t bg-gray-50">
-          <div className="text-sm text-gray-600">
-            <p>Messages remaining:</p>
-            <p className="text-2xl font-bold text-orange-600">{remainingMessages}</p>
-          </div>
-        </div>
+
       </div>
 
       {/* Main Chat Area */}
@@ -180,14 +173,14 @@ function ChatContent({ session }: { session: any }) {
                 <p className="text-gray-600 mb-4">
                   This is a demonstration of the credit-based messaging system. Each message consumes credits from your account balance.
                 </p>
-                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-4">
-                  <p className="text-sm text-orange-800">
+                <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-4 mb-4">
+                  <p className="text-sm text-emerald-800">
                     You currently have <span className="font-bold">{remainingMessages}</span> message credits available.
                   </p>
                 </div>
                 <Button
                   onClick={() => router.push('/plans')}
-                  className="btn-firecrawl-orange"
+                  className="btn-ainet-mint"
                 >
                   Get More Credits
                 </Button>
@@ -201,16 +194,14 @@ function ChatContent({ session }: { session: any }) {
                   className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                 >
                   <div
-                    className={`max-w-[70%] rounded-lg px-4 py-2 ${
-                      message.role === 'user'
-                        ? 'bg-orange-500 text-white'
+                    className={`max-w-[70%] rounded-lg px-4 py-2 ${message.role === 'user'
+                        ? 'bg-emerald-500 text-white'
                         : 'bg-gray-100 text-gray-900'
-                    }`}
+                      }`}
                   >
                     <p className="whitespace-pre-wrap">{message.content}</p>
-                    <p className={`text-xs mt-1 ${
-                      message.role === 'user' ? 'text-orange-100' : 'text-gray-500'
-                    }`}>
+                    <p className={`text-xs mt-1 ${message.role === 'user' ? 'text-emerald-100' : 'text-gray-500'
+                      }`}>
                       {format(new Date(message.createdAt), 'h:mm a')}
                     </p>
                   </div>
@@ -256,19 +247,19 @@ function ChatContent({ session }: { session: any }) {
               onChange={(e) => setInput(e.target.value)}
               placeholder={hasMessages ? "Type your message..." : "No messages available"}
               disabled={!hasMessages || sendMessage.isPending}
-              className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100 disabled:text-gray-500"
+              className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:bg-gray-100 disabled:text-gray-500"
             />
             <Button
               type="submit"
               disabled={!hasMessages || !input.trim() || sendMessage.isPending}
-              className="btn-firecrawl-orange"
+              className="btn-ainet-mint"
             >
               <Send className="w-4 h-4" />
             </Button>
           </form>
         </div>
       </div>
-      
+
       <ConfirmationDialog
         open={deleteDialogOpen}
         onOpenChange={setDeleteDialogOpen}

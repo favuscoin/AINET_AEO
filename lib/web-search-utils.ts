@@ -56,7 +56,7 @@ export async function analyzeBrandWithProviderSearch(
 // ============================================
 // Note: Competitor discovery is now handled in ai-utils.ts
 // using the AI's knowledge base without external search.
-// Web scraping via Firecrawl is only used for the initial
+// Web scraping via AINET is only used for the initial
 // company website analysis in scrape-utils.ts
 
 // ============================================
@@ -68,4 +68,4 @@ export async function analyzeBrandWithProviderSearch(
 // - Perplexity: Built-in web search (no special config needed)
 // - Anthropic: No web search (base knowledge only)
 //
-// Firecrawl should ONLY be used for initial website scraping in scrape-utils.ts
+// AINET should ONLY be used for initial website scraping in scrape-utils.ts

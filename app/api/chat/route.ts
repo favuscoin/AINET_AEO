@@ -4,25 +4,26 @@ import { Autumn } from 'autumn-js';
 import { db } from '@/lib/db';
 import { conversations, messages } from '@/lib/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import { 
-  AuthenticationError, 
-  InsufficientCreditsError, 
-  ValidationError, 
+import {
+  AuthenticationError,
+  InsufficientCreditsError,
+  ValidationError,
   DatabaseError,
   ExternalServiceError,
-  handleApiError 
+  handleApiError
 } from '@/lib/api-errors';
-import { 
-  FEATURE_ID_MESSAGES, 
+import {
+  FEATURE_ID_MESSAGES,
   CREDITS_PER_MESSAGE,
   ERROR_MESSAGES,
   ROLE_USER,
   ROLE_ASSISTANT,
   UI_LIMITS
 } from '@/config/constants';
+import { scrapeCompanyInfo } from '@/lib/scrape-utils';
 
 const autumn = new Autumn({
-  apiKey: process.env.AUTUMN_SECRET_KEY!,
+  secretKey: process.env.AUTUMN_SECRET_KEY!,
 });
 
 export async function POST(request: NextRequest) {
@@ -48,25 +49,47 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user has access to use the chat
+    const isDev = process.env.NODE_ENV === 'development';
+
     try {
       console.log('Checking access for:', {
         userId: sessionResponse.user.id,
         featureId: 'messages',
       });
-      
-      const access = await autumn.check({
-        customer_id: sessionResponse.user.id,
-        feature_id: FEATURE_ID_MESSAGES,
-      });
-      
-      console.log('Access check result:', access);
 
-      if (!access.data?.allowed) {
+      let allowed = true;
+      let balance = 1000;
+
+      if (!isDev || (process.env.AUTUMN_SECRET_KEY && !process.env.AUTUMN_SECRET_KEY.includes('1234'))) {
+        try {
+          const access = await autumn.check({
+            customer_id: sessionResponse.user.id,
+            feature_id: FEATURE_ID_MESSAGES,
+          });
+
+          console.log('Access check result:', access);
+          allowed = access.data?.allowed || false;
+          balance = access.data?.balance || 0;
+        } catch (err) {
+          console.error('Autumn check failed:', err);
+          if (isDev) {
+            console.log('[DEV] Bypassing failed Autumn check');
+            allowed = true;
+            balance = 1000;
+          } else {
+            throw err;
+          }
+        }
+      } else {
+        console.log('[DEV] Bypassing Autumn check (using mock balance)');
+      }
+
+      if (!allowed) {
         console.log('Access denied - no credits remaining');
         throw new InsufficientCreditsError(
           ERROR_MESSAGES.NO_CREDITS_REMAINING,
           CREDITS_PER_MESSAGE,
-          access.data?.balance || 0 
+          balance
         );
       }
     } catch (err) {
@@ -78,20 +101,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Track API usage with Autumn
-    try {
-      await autumn.track({
-        customer_id: sessionResponse.user.id,
-        feature_id: FEATURE_ID_MESSAGES,
-        count: CREDITS_PER_MESSAGE,
-      });
-    } catch (err) {
-      console.error('Failed to track usage:', err);
-      throw new ExternalServiceError('Unable to process credit usage. Please try again', 'autumn');
+    if (!isDev || (process.env.AUTUMN_SECRET_KEY && !process.env.AUTUMN_SECRET_KEY.includes('1234'))) {
+      try {
+        await autumn.track({
+          customer_id: sessionResponse.user.id,
+          feature_id: FEATURE_ID_MESSAGES,
+          value: CREDITS_PER_MESSAGE,
+        });
+      } catch (err) {
+        console.error('Failed to track usage:', err);
+        if (!isDev) {
+          throw new ExternalServiceError('Unable to process credit usage. Please try again', 'autumn');
+        }
+      }
+    } else {
+      console.log('[DEV] Bypassing Autumn track');
     }
 
     // Get or create conversation
     let currentConversation;
-    
+
     if (conversationId) {
       // Find existing conversation
       const existingConversation = await db.query.conversations.findFirst({
@@ -100,7 +129,7 @@ export async function POST(request: NextRequest) {
           eq(conversations.userId, sessionResponse.user.id)
         ),
       });
-      
+
       if (existingConversation) {
         currentConversation = existingConversation;
         // Update last message timestamp
@@ -110,7 +139,7 @@ export async function POST(request: NextRequest) {
           .where(eq(conversations.id, conversationId));
       }
     }
-    
+
     if (!currentConversation) {
       // Create new conversation
       const [newConversation] = await db
@@ -121,7 +150,7 @@ export async function POST(request: NextRequest) {
           lastMessageAt: new Date(),
         })
         .returning();
-      
+
       currentConversation = newConversation;
     }
 
@@ -136,16 +165,89 @@ export async function POST(request: NextRequest) {
       })
       .returning();
 
-    // Simple mock AI response
-    const responses = [
-      "I understand you're asking about " + message.substring(0, 20) + ". Here's what I think...",
-      "That's an interesting question! Let me help you with that.",
-      "Based on what you're saying, I can suggest the following approach...",
-      "Thanks for your message! Here's my response to your query.",
-      "I'm here to help! Regarding your question about " + message.substring(0, 15) + "...",
+    // Detect URLs in the message
+    const urlRegex = /(?:https?:\/\/)?(?:www\.)?([a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+)(?:\/[^\s]*)?/gi;
+    const urlMatches = message.match(urlRegex);
+    const detectedUrls = urlMatches ? [...new Set(urlMatches)].slice(0, 2) : []; // Max 2 URLs
+
+    // Scrape detected URLs
+    let scrapedData = '';
+    if (detectedUrls.length > 0) {
+      console.log('[Chat] Detected URLs:', detectedUrls);
+
+      for (const url of detectedUrls) {
+        try {
+          console.log('[Chat] Scraping URL:', url);
+          const company = await scrapeCompanyInfo(url);
+
+          scrapedData += `\n\n---\nWebsite Analysis for ${url}:\n`;
+          scrapedData += `- Title: ${company.name}\n`;
+          scrapedData += `- Description: ${company.description}\n`;
+          scrapedData += `- Industry: ${company.industry}\n`;
+
+          if (company.scrapedData) {
+            if (company.scrapedData.keywords?.length > 0) {
+              scrapedData += `- Keywords: ${company.scrapedData.keywords.join(', ')}\n`;
+            }
+            if (company.scrapedData.mainProducts?.length > 0) {
+              scrapedData += `- Main Products: ${company.scrapedData.mainProducts.join(', ')}\n`;
+            }
+            if (company.scrapedData.competitors?.length > 0) {
+              scrapedData += `- Competitors: ${company.scrapedData.competitors.join(', ')}\n`;
+            }
+            // Include a snippet of the content for analysis
+            const contentSnippet = company.scrapedData.mainContent.substring(0, 1500);
+            scrapedData += `- Content Preview: ${contentSnippet}...\n`;
+          }
+          scrapedData += `---\n`;
+        } catch (error) {
+          console.error('[Chat] Error scraping URL:', url, error);
+          scrapedData += `\n\n---\nNote: Unable to scrape ${url}. Proceeding with analysis based on URL only.\n---\n`;
+        }
+      }
+    }
+
+    // Get conversation history for context
+    const conversationHistory = await db.query.messages.findMany({
+      where: eq(messages.conversationId, currentConversation.id),
+      orderBy: [messages.createdAt],
+      limit: 20, // Last 20 messages for context
+    });
+
+    // Build messages array for AI with conversation history
+    const { streamText } = await import('ai');
+    const { openai } = await import('@ai-sdk/openai');
+    const { AEO_SYSTEM_PROMPT } = await import('@/lib/aeo-system-prompt');
+
+    const aiMessages = [
+      { role: 'system' as const, content: AEO_SYSTEM_PROMPT },
+      ...conversationHistory.map((msg) => ({
+        role: msg.role as 'user' | 'assistant',
+        content: msg.content,
+      })),
     ];
 
-    const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+    // Add scraped website data to context if available
+    if (scrapedData) {
+      aiMessages.push({
+        role: 'system' as const,
+        content: `The user mentioned website(s) in their message. Here is the scraped data from those websites:\n${scrapedData}\n\nUse this real data to provide specific, actionable AEO recommendations.`
+      });
+    }
+
+    // Stream AI response
+    const result = await streamText({
+      model: openai('gpt-4o-mini'),
+      messages: aiMessages,
+      temperature: 0.7,
+      maxTokens: 2000,
+    });
+
+    // Collect the streamed response
+    let fullResponse = '';
+    for await (const chunk of result.textStream) {
+      fullResponse += chunk;
+    }
 
     // Store AI response
     const [aiMessage] = await db
@@ -154,10 +256,11 @@ export async function POST(request: NextRequest) {
         conversationId: currentConversation.id,
         userId: sessionResponse.user.id,
         role: ROLE_ASSISTANT,
-        content: randomResponse,
-        tokenCount: randomResponse.length, // Simple token count estimate
+        content: fullResponse,
+        tokenCount: fullResponse.length, // Approximate token count
       })
       .returning();
+
 
     // Get remaining credits from Autumn
     let remainingCredits = 0;
@@ -172,7 +275,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({
-      response: randomResponse,
+      response: fullResponse,
       remainingCredits,
       creditsUsed: CREDITS_PER_MESSAGE,
       conversationId: currentConversation.id,

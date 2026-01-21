@@ -39,14 +39,14 @@ export async function identifyCompetitors(company: Company, progressCallback?: P
     if (configuredProviders.length === 0) {
       throw new Error('No AI providers configured and enabled');
     }
-    
+
     // Use the first available provider
     const provider = configuredProviders[0];
     const model = getProviderModel(provider.id, provider.defaultModel);
     if (!model) {
       throw new Error(`${provider.name} model not available`);
     }
-    
+
     const prompt = `Identify 6-9 real, established competitors of ${company.name} in the ${company.industry || 'technology'} industry.
 
 Company: ${company.name}
@@ -82,20 +82,20 @@ IMPORTANT:
 
     // Extract competitor names and filter for direct competitors
     // Exclude retailers and platforms unless the company itself is one
-    const isRetailOrPlatform = company.industry?.toLowerCase().includes('marketplace') || 
-                              company.industry?.toLowerCase().includes('platform') ||
-                              company.industry?.toLowerCase().includes('retailer');
-    
+    const isRetailOrPlatform = company.industry?.toLowerCase().includes('marketplace') ||
+      company.industry?.toLowerCase().includes('platform') ||
+      company.industry?.toLowerCase().includes('retailer');
+
     const competitors = object.competitors
       .filter(c => {
         // Always include direct competitors with high market overlap
         if (c.isDirectCompetitor && c.marketOverlap === 'high') return true;
-        
+
         // Exclude retailers/platforms for product companies
         if (!isRetailOrPlatform && (c.competitorType === 'retailer' || c.competitorType === 'platform')) {
           return false;
         }
-        
+
         // Include other direct competitors and high-overlap indirect competitors
         return c.competitorType === 'direct' || (c.competitorType === 'indirect' && c.marketOverlap === 'high');
       })
@@ -144,171 +144,169 @@ async function detectIndustryFromContent(company: Company): Promise<string> {
   // Analyze scraped content for better industry detection
   if (company.scrapedData) {
     const { title, description, mainContent, keywords } = company.scrapedData;
-    
+
     // Combine all text content for analysis
     const allContent = [title, description, mainContent, ...(keywords || [])].join(' ').toLowerCase();
-    
+
     // Enhanced keyword detection with context
     if (allContent.includes('web scraping') ||
-        allContent.includes('scraping') ||
-        allContent.includes('crawling') ||
-        allContent.includes('web crawler') ||
-        allContent.includes('data extraction') ||
-        allContent.includes('html parsing')) {
+      allContent.includes('scraping') ||
+      allContent.includes('crawling') ||
+      allContent.includes('web crawler') ||
+      allContent.includes('data extraction') ||
+      allContent.includes('html parsing')) {
       return 'web scraping';
     }
-    
+
     if (allContent.includes('artificial intelligence') ||
-        allContent.includes('machine learning') ||
-        allContent.includes('ai model') ||
-        allContent.includes('llm') ||
-        allContent.includes('natural language')) {
+      allContent.includes('machine learning') ||
+      allContent.includes('ai model') ||
+      allContent.includes('llm') ||
+      allContent.includes('natural language')) {
       return 'artificial intelligence';
     }
-    
+
     if (allContent.includes('deployment') ||
-        allContent.includes('hosting') ||
-        allContent.includes('cloud platform') ||
-        allContent.includes('server') ||
-        allContent.includes('infrastructure')) {
+      allContent.includes('hosting') ||
+      allContent.includes('cloud platform') ||
+      allContent.includes('server') ||
+      allContent.includes('infrastructure')) {
       return 'deployment platform';
     }
-    
+
     if (allContent.includes('e-commerce') ||
-        allContent.includes('ecommerce') ||
-        allContent.includes('online store') ||
-        allContent.includes('shopping cart')) {
+      allContent.includes('ecommerce') ||
+      allContent.includes('online store') ||
+      allContent.includes('shopping cart')) {
       return 'e-commerce';
     }
-    
+
     // Use first keyword as fallback
     if (keywords && keywords.length > 0) {
       return keywords[0];
     }
   }
-  
+
   return 'technology';
 }
 
 export async function generatePromptsForCompany(company: Company, competitors: string[]): Promise<BrandPrompt[]> {
-  const prompts: BrandPrompt[] = [];
-  let promptId = 0;
-
-  const brandName = company.name;
-  
-  // Extract context from scraped data
-  const scrapedData = company.scrapedData;
-  const keywords = scrapedData?.keywords || [];
-  const mainProducts = scrapedData?.mainProducts || [];
-  const description = scrapedData?.description || company.description || '';
-  
-  // Debug log to see what data we're working with
-  console.log('Generating prompts for:', {
-    brandName,
-    industry: company.industry,
-    mainProducts,
-    keywords: keywords.slice(0, 5),
-    competitors: competitors.slice(0, 5)
-  });
-  
-  // Build a more specific context from the scraped data
-  let productContext = '';
-  let categoryContext = '';
-  
-  // If we have specific products, use those first
-  if (mainProducts.length > 0) {
-    productContext = mainProducts.slice(0, 2).join(' and ');
-    // Infer category from products
-    const productsLower = mainProducts.join(' ').toLowerCase();
-    if (productsLower.includes('cooler') || productsLower.includes('drinkware')) {
-      categoryContext = 'outdoor gear brands';
-    } else if (productsLower.includes('software') || productsLower.includes('api')) {
-      categoryContext = 'software companies';
-    } else {
-      categoryContext = `${mainProducts[0]} brands`;
+  try {
+    // Get first available provider for prompt generation
+    const configuredProviders = getConfiguredProviders();
+    if (configuredProviders.length === 0) {
+      throw new Error('No AI providers configured for prompt generation');
     }
-  }
-  
-  // Analyze keywords and description to understand what the company actually does
-  const keywordsLower = keywords.map(k => k.toLowerCase()).join(' ');
-  const descLower = description.toLowerCase();
-  const allContext = `${keywordsLower} ${descLower} ${mainProducts.join(' ')}`;
-  
-  // Only determine category if we don't already have it from mainProducts
-  if (!productContext) {
-    // Check industry first for more accurate categorization
-    const industryLower = (company.industry || '').toLowerCase();
-    
-    if (industryLower === 'outdoor gear' || allContext.includes('cooler') || allContext.includes('drinkware') || allContext.includes('tumbler') || allContext.includes('outdoor')) {
-      productContext = 'coolers and drinkware';
-      categoryContext = 'outdoor gear brands';
-    } else if (industryLower === 'web scraping' || allContext.includes('web scraping') || allContext.includes('data extraction') || allContext.includes('crawler')) {
-      productContext = 'web scraping tools';
-      categoryContext = 'data extraction services';
-    } else if (allContext.includes('ai') || allContext.includes('artificial intelligence') || allContext.includes('machine learning')) {
-      productContext = 'AI tools';
-      categoryContext = 'artificial intelligence platforms';
-    } else if (allContext.includes('software') || allContext.includes('saas') || allContext.includes('application')) {
-      productContext = 'software solutions';
-      categoryContext = 'SaaS platforms';
-    } else if (allContext.includes('clothing') || allContext.includes('apparel') || allContext.includes('fashion')) {
-      productContext = 'clothing and apparel';
-      categoryContext = 'fashion brands';
-    } else if (allContext.includes('furniture') || allContext.includes('home') || allContext.includes('decor')) {
-      productContext = 'furniture and home goods';
-      categoryContext = 'home furnishing brands';
-    } else {
-      // Fallback: use the most prominent keywords, but avoid misclassifications
-      productContext = keywords.slice(0, 3).join(' and ') || 'products';
-      categoryContext = company.industry || 'companies';
+
+    // Use a fast, cost-effective model (prefer GPT-4o-mini or similar)
+    const provider = configuredProviders.find(p => p.id === 'openai') || configuredProviders[0];
+    const fastModel = provider.models.find(m =>
+      m.name.toLowerCase().includes('mini') ||
+      m.name.toLowerCase().includes('flash')
+    );
+    const modelId = fastModel?.id || provider.defaultModel;
+    const model = getProviderModel(provider.id, modelId);
+
+    if (!model) {
+      throw new Error(`No model available for prompt generation`);
     }
-  }
-  
-  // Safety check: if we somehow got "beverage" but it's clearly not a beverage company
-  if (productContext.includes('beverage') && (brandName.toLowerCase() === 'yeti' || allContext.includes('cooler'))) {
-    productContext = 'coolers and outdoor gear';
-    categoryContext = 'outdoor equipment brands';
-  }
 
-  // Generate contextually relevant prompts
-  const contextualTemplates = {
-    ranking: [
-      `best ${productContext} in 2024`,
-      `top ${categoryContext} ranked by quality`,
-      mainProducts.length > 0 ? `most recommended ${mainProducts[0]}` : `most recommended ${productContext}`,
-      keywords.length > 0 ? `best brands for ${keywords[0]}` : `popular ${categoryContext}`,
-    ],
-    comparison: [
-      `${brandName} vs ${competitors.slice(0, 2).join(' vs ')} for ${productContext}`,
-      `how does ${brandName} compare to other ${categoryContext}`,
-      competitors[0] && mainProducts[0] ? `${competitors[0]} or ${brandName} which has better ${mainProducts[0]}` : `${brandName} compared to alternatives`,
-    ],
-    alternatives: [
-      `alternatives to ${brandName} ${mainProducts[0] || productContext}`,
-      `${categoryContext} similar to ${brandName}`,
-      `competitors of ${brandName} in ${productContext.split(' ')[0]} market`,
-    ],
-    recommendations: [
-      mainProducts.length > 0 ? `is ${brandName} ${mainProducts[0]} worth buying` : `is ${brandName} worth it for ${productContext}`,
-      `${brandName} ${productContext} reviews and recommendations`,
-      `should I buy ${brandName} or other ${categoryContext}`,
-      `best ${productContext} for ${keywords.includes('professional') ? 'professionals' : keywords.includes('outdoor') ? 'outdoor enthusiasts' : 'everyday use'}`,
-    ],
-  };
+    // Extract context from scraped data
+    const scrapedData = company.scrapedData;
+    const keywords = scrapedData?.keywords || [];
+    const mainProducts = scrapedData?.mainProducts || [];
+    const description = scrapedData?.description || company.description || '';
 
-  // Generate prompts from contextual templates
-  Object.entries(contextualTemplates).forEach(([category, templates]) => {
-    templates.forEach(prompt => {
-      prompts.push({
-        id: (++promptId).toString(),
-        prompt,
-        category: category as BrandPrompt['category'],
-      });
+    console.log('Generating AI-powered prompts for:', {
+      brandName: company.name,
+      industry: company.industry,
+      mainProducts: mainProducts.slice(0, 3),
+      competitors: competitors.slice(0, 3)
     });
-  });
 
-  return prompts;
+    // Define schema for AI-generated prompts
+    const PromptGenerationSchema = z.object({
+      prompts: z.array(z.object({
+        prompt: z.string().describe('A natural search query that users would actually type'),
+        category: z.enum(['ranking', 'comparison', 'alternatives', 'recommendations']).describe('The type of query'),
+        reasoning: z.string().describe('Why this prompt is relevant for this brand')
+      }))
+    });
+
+    // Create AI prompt for generating search queries
+    const aiPrompt = `You are an expert at understanding how people search for products and services online.
+
+Company Information:
+- Name: ${company.name}
+- Industry: ${company.industry || 'Not specified'}
+- Description: ${description}
+- Main Products/Services: ${mainProducts.join(', ') || 'Not specified'}
+- Keywords: ${keywords.slice(0, 5).join(', ') || 'Not specified'}
+- Known Competitors: ${competitors.slice(0, 5).join(', ')}
+
+Your task: Generate 6-8 highly relevant search queries that real users would type when looking for information about ${company.name} or similar ${company.industry || 'products/services'}.
+
+Requirements:
+1. **Natural language**: Write queries as people actually search (e.g., "best X for Y" not "X products")
+2. **Diverse categories**: Include different types:
+   - Ranking queries (e.g., "best web scraping tools 2024")
+   - Comparison queries (e.g., "${company.name} vs ${competitors[0] || 'competitors'}")
+   - Alternative queries (e.g., "alternatives to ${company.name}")
+   - Recommendation queries (e.g., "is ${company.name} worth it")
+3. **Specific to the business**: Use actual product names, features, or use cases from the company data
+4. **Include competitors**: Reference 1-2 competitors in comparison queries
+5. **Current year**: Use 2024 or 2025 where relevant
+6. **Realistic**: Think about what someone would actually search for
+
+Examples of GOOD prompts for a web scraping API:
+- "best web scraping API for JavaScript rendering"
+- "Firecrawl vs Apify for e-commerce data extraction"
+- "alternatives to Bright Data web scraping"
+- "is Firecrawl worth it for startups"
+
+Examples of BAD prompts (too generic):
+- "best tools"
+- "top companies"
+- "good products"
+
+Generate prompts that would help measure ${company.name}'s visibility in AI search results.`;
+
+    const { object } = await generateObject({
+      model,
+      schema: PromptGenerationSchema,
+      prompt: aiPrompt,
+      temperature: 0.7, // Some creativity but not too random
+    });
+
+    console.log(`Generated ${object.prompts.length} AI-powered prompts for ${company.name}`);
+
+    // Convert to BrandPrompt format
+    return object.prompts.map((p, index) => ({
+      id: (index + 1).toString(),
+      prompt: p.prompt,
+      category: p.category,
+    }));
+
+  } catch (error) {
+    console.error('Error generating AI prompts:', error);
+
+    // Fallback to simple template-based prompts if AI generation fails
+    console.log('Falling back to template-based prompts');
+    const brandName = company.name;
+    const industry = company.industry || 'products';
+    const mainProduct = company.scrapedData?.mainProducts?.[0] || industry;
+    const competitor1 = competitors[0] || 'competitors';
+    const competitor2 = competitors[1] || 'alternatives';
+
+    return [
+      { id: '1', prompt: `best ${mainProduct} in 2024`, category: 'ranking' as const },
+      { id: '2', prompt: `${brandName} vs ${competitor1}`, category: 'comparison' as const },
+      { id: '3', prompt: `alternatives to ${brandName}`, category: 'alternatives' as const },
+      { id: '4', prompt: `is ${brandName} worth it`, category: 'recommendations' as const },
+    ];
+  }
 }
+
 
 export async function analyzePromptWithProvider(
   prompt: string,
@@ -324,16 +322,16 @@ export async function analyzePromptWithProvider(
 
   // Normalize provider name for consistency
   const normalizedProvider = normalizeProviderName(provider);
-  
+
   // Get model from centralized configuration
   const model = getProviderModel(normalizedProvider);
-  
+
   if (!model) {
     console.warn(`Provider ${provider} not configured, skipping provider`);
     // Return null to indicate this provider should be skipped
     return null as any;
   }
-  
+
   console.log(`${provider} model obtained successfully: ${typeof model}`);
   if (normalizedProvider === 'google') {
     console.log('Google model details:', model);
@@ -358,7 +356,7 @@ When responding to prompts about tools, platforms, or services:
       maxTokens: 800,
     });
     console.log(`${provider} response length: ${text.length}, first 100 chars: "${text.substring(0, 100)}"`);
-    
+
     if (!text || text.length === 0) {
       console.error(`${provider} returned empty response for prompt: "${prompt}"`);
       throw new Error(`${provider} returned empty response`);
@@ -398,10 +396,10 @@ Examples of mentions to catch:
     let object;
     try {
       // Use a fast model for structured output if available
-      const structuredModel = normalizedProvider === 'anthropic' 
+      const structuredModel = normalizedProvider === 'anthropic'
         ? getProviderModel('openai', 'gpt-4o-mini') || model
         : model;
-      
+
       const result = await generateObject({
         model: structuredModel,
         schema: RankingSchema,
@@ -412,7 +410,7 @@ Examples of mentions to catch:
       object = result.object;
     } catch (error) {
       console.error(`Error generating structured object with ${provider}:`, (error as any).message);
-      
+
       // For Anthropic, try a simpler text-based approach
       if (provider === 'Anthropic') {
         try {
@@ -431,28 +429,28 @@ Return a simple analysis:
             prompt: simplePrompt,
             temperature: 0.3,
           });
-          
+
           // Parse the simple response with enhanced detection
           const lines = simpleResponse.toLowerCase().split('\n');
           const aiSaysBrandMentioned = lines.some(line => line.includes('yes'));
-          
+
           // Use enhanced detection as fallback
           const brandDetection = detectBrandMention(text, brandName, {
             caseSensitive: false,
             wholeWordOnly: true,
             includeVariations: true
           });
-          
+
           const competitorDetections = detectMultipleBrands(text, competitors, {
             caseSensitive: false,
             wholeWordOnly: true,
             includeVariations: true
           });
-          
-          const competitors_mentioned = competitors.filter(c => 
+
+          const competitors_mentioned = competitors.filter(c =>
             competitorDetections.get(c)?.mentioned || false
           );
-          
+
           return {
             provider,
             prompt,
@@ -469,20 +467,20 @@ Return a simple analysis:
           console.error('Fallback analysis also failed:', (fallbackError as any).message);
         }
       }
-      
+
       // Final fallback with enhanced detection
       const brandDetection = detectBrandMention(text, brandName, {
         caseSensitive: false,
         wholeWordOnly: true,
         includeVariations: true
       });
-      
+
       const competitorDetections = detectMultipleBrands(text, competitors, {
         caseSensitive: false,
         wholeWordOnly: true,
         includeVariations: true
       });
-      
+
       return {
         provider,
         prompt,
@@ -506,11 +504,11 @@ Return a simple analysis:
 
     // Enhanced fallback with proper brand detection using configured options
     const brandDetectionOptions = getBrandDetectionOptions(brandName);
-    
+
     // Detect brand mention with enhanced detection
     const brandDetectionResult = detectBrandMention(text, brandName, brandDetectionOptions);
     const brandMentioned = object.analysis.brandMentioned || brandDetectionResult.mentioned;
-    
+
     // Detect all competitor mentions with their specific options
     const competitorDetectionResults = new Map<string, any>();
     competitors.forEach(competitor => {
@@ -518,11 +516,11 @@ Return a simple analysis:
       const result = detectBrandMention(text, competitor, competitorOptions);
       competitorDetectionResults.set(competitor, result);
     });
-    
+
     // Combine AI-detected competitors with enhanced detection
     const aiCompetitors = new Set(object.analysis.competitors);
     const allMentionedCompetitors = new Set([...aiCompetitors]);
-    
+
     // Add competitors found by enhanced detection
     competitorDetectionResults.forEach((result, competitorName) => {
       if (result.mentioned && competitorName !== brandName) {
@@ -531,13 +529,13 @@ Return a simple analysis:
     });
 
     // Filter competitors to only include the ones we're tracking
-    const relevantCompetitors = Array.from(allMentionedCompetitors).filter(c => 
+    const relevantCompetitors = Array.from(allMentionedCompetitors).filter(c =>
       competitors.includes(c) && c !== brandName
     );
-    
+
     // Log detection details for debugging
     if (brandDetectionResult.mentioned && !object.analysis.brandMentioned) {
-      console.log(`Enhanced detection found brand "${brandName}" in response from ${provider}:`, 
+      console.log(`Enhanced detection found brand "${brandName}" in response from ${provider}:`,
         brandDetectionResult.matches.map(m => ({
           text: m.text,
           confidence: m.confidence
@@ -547,11 +545,11 @@ Return a simple analysis:
 
     // Get the proper display name for the provider
     const providerDisplayName = provider === 'openai' ? 'OpenAI' :
-                               provider === 'anthropic' ? 'Anthropic' :
-                               provider === 'google' ? 'Google' :
-                               provider === 'perplexity' ? 'Perplexity' :
-                               provider; // fallback to original
-    
+      provider === 'anthropic' ? 'Anthropic' :
+        provider === 'google' ? 'Google' :
+          provider === 'perplexity' ? 'Perplexity' :
+            provider; // fallback to original
+
     // Debug log for Google responses
     if (provider === 'google' || provider === 'Google') {
       console.log('Google response generated:', {
@@ -596,7 +594,7 @@ Return a simple analysis:
     };
   } catch (error) {
     console.error(`Error with ${provider}:`, error);
-    
+
     // Special handling for Google errors
     if (provider === 'Google' || provider === 'google') {
       console.error('Google-specific error details:', {
@@ -606,7 +604,7 @@ Return a simple analysis:
         cause: (error as any).cause
       });
     }
-    
+
     throw error;
   }
 }
@@ -618,7 +616,7 @@ export async function analyzeCompetitors(
 ): Promise<CompetitorRanking[]> {
   // Create a set of companies to track (company + its known competitors)
   const trackedCompanies = new Set([company.name, ...knownCompetitors]);
-  
+
   // Initialize competitor data
   const competitorMap = new Map<string, {
     mentions: number;
@@ -639,20 +637,20 @@ export async function analyzeCompetitors(
   responses.forEach(response => {
     // Track which companies were mentioned in this response
     const mentionedInResponse = new Set<string>();
-    
+
     // Process rankings if available
     if (response.rankings) {
       response.rankings.forEach(ranking => {
         // Only track companies we care about
         if (trackedCompanies.has(ranking.company)) {
           const data = competitorMap.get(ranking.company)!;
-          
+
           // Only count one mention per response
           if (!mentionedInResponse.has(ranking.company)) {
             data.mentions++;
             mentionedInResponse.add(ranking.company);
           }
-          
+
           data.positions.push(ranking.position);
           if (ranking.sentiment) {
             data.sentiments.push(ranking.sentiment);
@@ -700,8 +698,8 @@ export async function analyzeCompetitors(
   // Calculate share of voice
   const totalMentions = competitors.reduce((sum, c) => sum + c.mentions, 0);
   competitors.forEach(c => {
-    c.shareOfVoice = totalMentions > 0 
-      ? Math.round((c.mentions / totalMentions) * 1000) / 10 
+    c.shareOfVoice = totalMentions > 0
+      ? Math.round((c.mentions / totalMentions) * 1000) / 10
       : 0;
   });
 
@@ -711,7 +709,7 @@ export async function analyzeCompetitors(
 
 function calculateSentimentScore(sentiments: ('positive' | 'neutral' | 'negative')[]): number {
   if (sentiments.length === 0) return 50;
-  
+
   const sentimentValues = { positive: 100, neutral: 50, negative: 0 };
   const sum = sentiments.reduce((acc, s) => acc + sentimentValues[s], 0);
   return Math.round(sum / sentiments.length);
@@ -719,10 +717,10 @@ function calculateSentimentScore(sentiments: ('positive' | 'neutral' | 'negative
 
 function determineSentiment(sentiments: ('positive' | 'neutral' | 'negative')[]): 'positive' | 'neutral' | 'negative' {
   if (sentiments.length === 0) return 'neutral';
-  
+
   const counts = { positive: 0, neutral: 0, negative: 0 };
   sentiments.forEach(s => counts[s]++);
-  
+
   if (counts.positive > counts.negative && counts.positive > counts.neutral) return 'positive';
   if (counts.negative > counts.positive && counts.negative > counts.neutral) return 'negative';
   return 'neutral';
@@ -742,7 +740,7 @@ export function calculateBrandScores(responses: AIResponse[], brandName: string,
 
   // Find the brand's competitor ranking
   const brandRanking = competitors.find(c => c.isOwn);
-  
+
   if (!brandRanking) {
     return {
       visibilityScore: 0,
@@ -759,14 +757,14 @@ export function calculateBrandScores(responses: AIResponse[], brandName: string,
   const averagePosition = brandRanking.averagePosition;
 
   // Calculate position score (lower is better, scale to 0-100)
-  const positionScore = averagePosition <= 10 
-    ? (11 - averagePosition) * 10 
+  const positionScore = averagePosition <= 10
+    ? (11 - averagePosition) * 10
     : Math.max(0, 100 - (averagePosition * 2));
 
   // Overall Score (weighted average)
   const overallScore = (
-    visibilityScore * 0.3 + 
-    sentimentScore * 0.2 + 
+    visibilityScore * 0.3 +
+    sentimentScore * 0.2 +
     shareOfVoice * 0.3 +
     positionScore * 0.2
   );
@@ -789,17 +787,17 @@ export async function analyzeCompetitorsByProvider(
   providerComparison: ProviderComparisonData[];
 }> {
   const trackedCompanies = new Set([company.name, ...knownCompetitors]);
-  
+
   // Get configured providers from centralized config
   const configuredProviders = getConfiguredProviders();
   const providers = configuredProviders.map(p => p.name);
-  
+
   // If no providers available, use mock mode
   if (providers.length === 0) {
     console.warn('No AI providers configured, using default provider list');
     providers.push('OpenAI', 'Anthropic', 'Google');
   }
-  
+
   // Initialize provider-specific data
   const providerData = new Map<string, Map<string, {
     mentions: number;
@@ -854,23 +852,23 @@ export async function analyzeCompetitorsByProvider(
 
   // Calculate provider-specific rankings
   const providerRankings: ProviderSpecificRanking[] = [];
-  
+
   providers.forEach(provider => {
     const competitorMap = providerData.get(provider)!;
     const providerResponses = responses.filter(r => r.provider === provider);
     const totalResponses = providerResponses.length;
-    
+
     const competitors: CompetitorRanking[] = [];
-    
+
     competitorMap.forEach((data, name) => {
       const avgPosition = data.positions.length > 0
         ? data.positions.reduce((a, b) => a + b, 0) / data.positions.length
         : 99;
-      
-      const visibilityScore = totalResponses > 0 
-        ? (data.mentions / totalResponses) * 100 
+
+      const visibilityScore = totalResponses > 0
+        ? (data.mentions / totalResponses) * 100
         : 0;
-      
+
       competitors.push({
         name,
         mentions: data.mentions,
@@ -886,14 +884,14 @@ export async function analyzeCompetitorsByProvider(
     // Calculate share of voice for this provider
     const totalMentions = competitors.reduce((sum, c) => sum + c.mentions, 0);
     competitors.forEach(c => {
-      c.shareOfVoice = totalMentions > 0 
-        ? Math.round((c.mentions / totalMentions) * 1000) / 10 
+      c.shareOfVoice = totalMentions > 0
+        ? Math.round((c.mentions / totalMentions) * 1000) / 10
         : 0;
     });
 
     // Sort by visibility score
     competitors.sort((a, b) => b.visibilityScore - a.visibilityScore);
-    
+
     providerRankings.push({
       provider,
       competitors,
@@ -902,7 +900,7 @@ export async function analyzeCompetitorsByProvider(
 
   // Create provider comparison data
   const providerComparison: ProviderComparisonData[] = [];
-  
+
   trackedCompanies.forEach(companyName => {
     const comparisonData: ProviderComparisonData = {
       competitor: companyName,
@@ -944,33 +942,33 @@ function generateMockResponse(
 ): AIResponse {
   // Simulate some delay
   const delay = Math.random() * 500 + 200;
-  
+
   // Create a realistic-looking ranking
   const allCompanies = [brandName, ...competitors].slice(0, 10);
   const shuffled = [...allCompanies].sort(() => Math.random() - 0.5);
-  
+
   const rankings: CompanyRanking[] = shuffled.slice(0, 5).map((company, index) => ({
     position: index + 1,
     company,
     reason: `${company} offers strong features in this category`,
     sentiment: Math.random() > 0.7 ? 'positive' : Math.random() > 0.3 ? 'neutral' : 'negative' as const,
   }));
-  
+
   const brandRanking = rankings.find(r => r.company === brandName);
   const brandMentioned = !!brandRanking || Math.random() > 0.3;
   const brandPosition = brandRanking?.position || (brandMentioned ? Math.floor(Math.random() * 8) + 3 : undefined);
-  
+
   // Get the proper display name for the provider
   const providerDisplayName = provider === 'openai' ? 'OpenAI' :
-                             provider === 'anthropic' ? 'Anthropic' :
-                             provider === 'google' ? 'Google' :
-                             provider === 'perplexity' ? 'Perplexity' :
-                             provider; // fallback to original
+    provider === 'anthropic' ? 'Anthropic' :
+      provider === 'google' ? 'Google' :
+        provider === 'perplexity' ? 'Perplexity' :
+          provider; // fallback to original
 
   return {
     provider: providerDisplayName,
     prompt,
-    response: `Based on my analysis, here are the top solutions:\n\n${rankings.map(r => 
+    response: `Based on my analysis, here are the top solutions:\n\n${rankings.map(r =>
       `${r.position}. ${r.company} - ${r.reason}`
     ).join('\n')}\n\nThese rankings are based on features, user satisfaction, and market presence.`,
     rankings,

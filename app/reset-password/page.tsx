@@ -57,8 +57,8 @@ function ResetPasswordForm() {
     return (
       <div className="min-h-screen flex">
         {/* Left side - Orange gradient */}
-        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 p-12 items-center justify-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-orange-400/90 via-orange-500/90 to-orange-600/90" />
+        <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-300 via-emerald-400 to-emerald-500 p-12 items-center justify-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-300/90 via-emerald-400/90 to-emerald-500/90" />
           <div className="relative z-10 max-w-md text-white">
             <h1 className="text-4xl font-bold mb-4">Invalid Link</h1>
             <p className="text-lg opacity-90">
@@ -66,8 +66,8 @@ function ResetPasswordForm() {
             </p>
           </div>
           {/* Decorative elements */}
-          <div className="absolute top-20 right-20 w-64 h-64 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob" />
-          <div className="absolute bottom-20 left-20 w-64 h-64 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000" />
+          <div className="absolute top-20 right-20 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob" />
+          <div className="absolute bottom-20 left-20 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000" />
         </div>
 
         {/* Right side - Error message */}
@@ -87,7 +87,7 @@ function ResetPasswordForm() {
               </p>
               <Link 
                 href="/forgot-password"
-                className="mt-6 inline-block btn-firecrawl-default whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-6 py-2"
+                className="mt-6 inline-block btn-ainet-default whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-6 py-2"
               >
                 Request new reset link
               </Link>
@@ -101,8 +101,8 @@ function ResetPasswordForm() {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Orange gradient */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 p-12 items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-400/90 via-orange-500/90 to-orange-600/90" />
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-300 via-emerald-400 to-emerald-500 p-12 items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-300/90 via-emerald-400/90 to-emerald-500/90" />
         <div className="relative z-10 max-w-md text-white">
           <h1 className="text-4xl font-bold mb-4">Almost there!</h1>
           <p className="text-lg opacity-90">
@@ -124,8 +124,8 @@ function ResetPasswordForm() {
           </div>
         </div>
         {/* Decorative elements */}
-        <div className="absolute top-20 right-20 w-64 h-64 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob" />
-        <div className="absolute bottom-20 left-20 w-64 h-64 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000" />
+        <div className="absolute top-20 right-20 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob" />
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000" />
       </div>
 
       {/* Right side - Form */}
@@ -134,10 +134,10 @@ function ResetPasswordForm() {
           <div>
             <div className="lg:hidden mb-8 flex justify-center">
               <Image
-                src="/firecrawl-logo-with-fire.webp"
-                alt="Firecrawl"
-                width={180}
-                height={37}
+                src="/airternet-logo.png"
+                alt="AIrternet"
+                width={90}
+                height={18}
                 priority
               />
             </div>
@@ -163,7 +163,7 @@ function ResetPasswordForm() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   placeholder="Enter new password"
                 />
               </div>
@@ -180,7 +180,7 @@ function ResetPasswordForm() {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   placeholder="Confirm new password"
                 />
               </div>
@@ -196,14 +196,14 @@ function ResetPasswordForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-firecrawl-default w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 h-10 px-4"
+                className="btn-ainet-default w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 h-10 px-4"
               >
                 {loading ? 'Resetting...' : 'Reset password'}
               </button>
             </div>
 
             <div className="text-center">
-              <Link href="/login" className="text-sm text-orange-600 hover:text-orange-500 inline-flex items-center">
+              <Link href="/login" className="text-sm text-emerald-600 hover:text-emerald-500 inline-flex items-center">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to login
               </Link>
@@ -219,7 +219,7 @@ export default function ResetPasswordPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
       </div>
     }>
       <ResetPasswordForm />

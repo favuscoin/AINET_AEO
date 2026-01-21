@@ -1,6 +1,6 @@
-# FireGEO Open-Source SaaS Starter
+# AINET GEO Open-Source SaaS Starter
 
-<img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjh4N3VwdGw2YXg2ZXpvMHBlNDFlejd1MjBpZXBxNHZ5YXJxOGk5OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/x2sTqbCW5m7z0qaNJM/giphy.gif" alt="FireGEO Demo" width="100%" />
+<img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjh4N3VwdGw2YXg2ZXpvMHBlNDFlejd1MjBpZXBxNHZ5YXJxOGk5OSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/x2sTqbCW5m7z0qaNJM/giphy.gif" alt="AINET GEO Demo" width="100%" />
 
 Get your SaaS running in minutes with authentication, billing, AI chat, and brand monitoring. Zero-config setup with Next.js 15, TypeScript, and PostgreSQL.
 
@@ -19,8 +19,8 @@ Get your SaaS running in minutes with authentication, billing, AI chat, and bran
 
 ```bash
 # Clone the repository
-git clone https://github.com/mendableai/firegeo
-cd firegeo
+git clone https://github.com/mendableai/ainet geo
+cd ainet geo
 
 # Copy environment variables
 cp .env.example .env.local
@@ -136,7 +136,7 @@ npm run lint             # Run ESLint
 |----------|-------------|
 | **Frontend** | Next.js 15.3, React 19, TypeScript 5.7 |
 | **Styling** | Tailwind CSS v4, shadcn/ui, Lucide Icons |
-| **Web Scraping** | Firecrawl |
+| **Web Scraping** | AINET |
 | **Database** | PostgreSQL, Drizzle ORM |
 | **Authentication** | Better Auth |
 | **Payments** | Autumn (with Stripe integration) |
@@ -234,7 +234,7 @@ Sign up at [resend.com](https://resend.com)
 
 Get your API keys from the following providers:
 
-- **Firecrawl**: [https://app.firecrawl.dev/api-keys](https://app.firecrawl.dev/api-keys) → Copy to `FIRECRAWL_API_KEY`
+- **AINET**: [https://app.firecrawl.dev/api-keys](https://app.firecrawl.dev/api-keys) → Copy to `FIRECRAWL_API_KEY`
 - **OpenAI**: [https://platform.openai.com/api-keys](https://platform.openai.com/api-keys) → Copy to `OPENAI_API_KEY`
 - **Anthropic (Claude)**: [https://console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys) → Copy to `ANTHROPIC_API_KEY`
 - **Google AI (Gemini)**: [https://aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey) → Copy to `GOOGLE_GENERATIVE_AI_API_KEY`
@@ -267,7 +267,7 @@ NEXT_PUBLIC_APP_URL=       # Public app URL
 AUTUMN_SECRET_KEY=         # From Autumn dashboard
 
 # Brand Monitor
-FIRECRAWL_API_KEY=         # From Firecrawl
+FIRECRAWL_API_KEY=         # From AINET
 
 # Email
 RESEND_API_KEY=            # From Resend
@@ -339,7 +339,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## Resources
 
-- [Firecrawl API](https://docs.firecrawl.dev)
+- [AINET API](https://docs.firecrawl.dev)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Better Auth Docs](https://better-auth.com)
 - [Autumn Documentation](https://docs.useautumn.com)

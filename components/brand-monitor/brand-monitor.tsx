@@ -6,8 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Sparkles } from 'lucide-react';
 import { CREDITS_PER_BRAND_ANALYSIS } from '@/config/constants';
 import { ClientApiError } from '@/lib/client-errors';
-import { 
-  brandMonitorReducer, 
+import {
+  brandMonitorReducer,
   initialBrandMonitorState,
   BrandMonitorAction,
   IdentifiedCompetitor
@@ -46,27 +46,27 @@ interface BrandMonitorProps {
   onSaveAnalysis?: (analysis: any) => void;
 }
 
-export function BrandMonitor({ 
-  creditsAvailable = 0, 
+export function BrandMonitor({
+  creditsAvailable = 0,
   onCreditsUpdate,
   selectedAnalysis,
-  onSaveAnalysis 
+  onSaveAnalysis
 }: BrandMonitorProps = {}) {
   const [state, dispatch] = useReducer(brandMonitorReducer, initialBrandMonitorState);
   const [demoUrl] = useState('example.com');
   const saveAnalysis = useSaveBrandAnalysis();
   const [isLoadingExistingAnalysis, setIsLoadingExistingAnalysis] = useState(false);
   const hasSavedRef = useRef(false);
-  
-  const { startSSEConnection } = useSSEHandler({ 
-    state, 
-    dispatch, 
+
+  const { startSSEConnection } = useSSEHandler({
+    state,
+    dispatch,
     onCreditsUpdate,
     onAnalysisComplete: (completedAnalysis) => {
       // Only save if this is a new analysis (not loaded from existing)
       if (!selectedAnalysis && !hasSavedRef.current) {
         hasSavedRef.current = true;
-        
+
         const analysisData = {
           url: company?.url || url,
           companyName: company?.name,
@@ -76,7 +76,7 @@ export function BrandMonitor({
           prompts: analyzingPrompts,
           creditsUsed: CREDITS_PER_BRAND_ANALYSIS
         };
-        
+
         saveAnalysis.mutate(analysisData, {
           onSuccess: (savedAnalysis) => {
             console.log('Analysis saved successfully:', savedAnalysis);
@@ -92,7 +92,7 @@ export function BrandMonitor({
       }
     }
   });
-  
+
   // Extract state for easier access
   const {
     url,
@@ -121,11 +121,12 @@ export function BrandMonitor({
     newPromptText,
     newCompetitorName,
     newCompetitorUrl,
-    scrapingCompetitors
+    scrapingCompetitors,
+    useWebSearch
   } = state;
-  
+
   // Remove the auto-save effect entirely - we'll save manually when analysis completes
-  
+
   // Load selected analysis if provided or reset when null
   useEffect(() => {
     if (selectedAnalysis && selectedAnalysis.analysisData) {
@@ -133,11 +134,13 @@ export function BrandMonitor({
       // Restore the analysis state from saved data
       dispatch({ type: 'SET_ANALYSIS', payload: selectedAnalysis.analysisData });
       if (selectedAnalysis.companyName) {
-        dispatch({ type: 'SCRAPE_SUCCESS', payload: {
-          name: selectedAnalysis.companyName,
-          url: selectedAnalysis.url,
-          industry: selectedAnalysis.industry
-        } as Company });
+        dispatch({
+          type: 'SCRAPE_SUCCESS', payload: {
+            name: selectedAnalysis.companyName,
+            url: selectedAnalysis.url,
+            industry: selectedAnalysis.industry
+          } as Company
+        });
       }
       // Reset the flag after a short delay to ensure the save effect doesn't trigger
       setTimeout(() => setIsLoadingExistingAnalysis(false), 100);
@@ -148,16 +151,16 @@ export function BrandMonitor({
       setIsLoadingExistingAnalysis(false);
     }
   }, [selectedAnalysis]);
-  
+
   // Handlers
   const handleUrlChange = useCallback((newUrl: string) => {
     dispatch({ type: 'SET_URL', payload: newUrl });
-    
+
     // Clear any existing error when user starts typing
     if (error) {
       dispatch({ type: 'SET_ERROR', payload: null });
     }
-    
+
     // Validate URL on change
     if (newUrl.length > 0) {
       const isValid = validateUrl(newUrl);
@@ -166,7 +169,7 @@ export function BrandMonitor({
       dispatch({ type: 'SET_URL_VALID', payload: null });
     }
   }, [error]);
-  
+
   const handleScrape = useCallback(async () => {
     if (!url) {
       dispatch({ type: 'SET_ERROR', payload: 'Please enter a URL' });
@@ -180,22 +183,20 @@ export function BrandMonitor({
       return;
     }
 
-    // Check if user has enough credits for initial scrape (1 credit)
-    if (creditsAvailable < 1) {
-      dispatch({ type: 'SET_ERROR', payload: 'Insufficient credits. You need at least 1 credit to analyze a URL.' });
-      return;
-    }
+    // Note: Credit check is handled by the backend API
+    // In development mode, the backend bypasses Autumn credit checks
+    // In production, the backend will enforce credit requirements
 
     console.log('Starting scrape for URL:', url);
     dispatch({ type: 'SET_LOADING', payload: true });
     dispatch({ type: 'SET_ERROR', payload: null });
     dispatch({ type: 'SET_URL_VALID', payload: true });
-    
+
     try {
       const response = await fetch('/api/brand-monitor/scrape', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           url,
           maxAge: 7 * 24 * 60 * 60 * 1000 // 1 week in milliseconds
         }),
@@ -219,19 +220,19 @@ export function BrandMonitor({
 
       const data = await response.json();
       console.log('Scrape data received:', data);
-      
+
       if (!data.company) {
         throw new Error('No company data received');
       }
-      
+
       // Scrape was successful - credits have been deducted, refresh the navbar
       if (onCreditsUpdate) {
         onCreditsUpdate();
       }
-      
+
       // Start fade out transition
       dispatch({ type: 'SET_SHOW_INPUT', payload: false });
-      
+
       // After fade out completes, set company and show card with fade in
       setTimeout(() => {
         dispatch({ type: 'SCRAPE_SUCCESS', payload: data.company });
@@ -254,12 +255,12 @@ export function BrandMonitor({
       dispatch({ type: 'SET_LOADING', payload: false });
     }
   }, [url, creditsAvailable, onCreditsUpdate]);
-  
+
   const handlePrepareAnalysis = useCallback(async () => {
     if (!company) return;
-    
+
     dispatch({ type: 'SET_PREPARING_ANALYSIS', payload: true });
-    
+
     // Check which providers are available
     try {
       const response = await fetch('/api/brand-monitor/check-providers', {
@@ -276,24 +277,24 @@ export function BrandMonitor({
       if (process.env.NEXT_PUBLIC_HAS_ANTHROPIC_KEY) defaultProviders.push('Anthropic');
       dispatch({ type: 'SET_AVAILABLE_PROVIDERS', payload: defaultProviders.length > 0 ? defaultProviders : ['OpenAI', 'Anthropic'] });
     }
-    
+
     // Extract competitors from scraped data or use industry defaults
     const extractedCompetitors = company.scrapedData?.competitors || [];
     const industryCompetitors = getIndustryCompetitors(company.industry || '');
-    
+
     // Merge extracted competitors with industry defaults, keeping URLs where available
     const competitorMap = new Map<string, IdentifiedCompetitor>();
-    
+
     // Add industry competitors first (they have URLs)
     industryCompetitors.forEach(comp => {
       const normalizedName = normalizeCompetitorName(comp.name);
       competitorMap.set(normalizedName, comp as IdentifiedCompetitor);
     });
-    
+
     // Add extracted competitors and try to match them with known URLs
     extractedCompetitors.forEach(name => {
       const normalizedName = normalizeCompetitorName(name);
-      
+
       // Check if we already have this competitor
       const existing = competitorMap.get(normalizedName);
       if (existing) {
@@ -304,53 +305,51 @@ export function BrandMonitor({
         }
         return;
       }
-      
+
       // New competitor - try to find a URL for it
       const url = assignUrlToCompetitor(name);
       competitorMap.set(normalizedName, { name, url });
     });
-    
+
     let competitors = Array.from(competitorMap.values())
-      .filter(comp => comp.name !== 'Competitor 1' && comp.name !== 'Competitor 2' && 
-                      comp.name !== 'Competitor 3' && comp.name !== 'Competitor 4' && 
-                      comp.name !== 'Competitor 5')
+      .filter(comp => comp.name !== 'Competitor 1' && comp.name !== 'Competitor 2' &&
+        comp.name !== 'Competitor 3' && comp.name !== 'Competitor 4' &&
+        comp.name !== 'Competitor 5')
       .slice(0, 10);
 
     // Just use the first 6 competitors without AI validation
     competitors = competitors.slice(0, 6);
-    
+
     console.log('Identified competitors:', competitors);
     dispatch({ type: 'SET_IDENTIFIED_COMPETITORS', payload: competitors });
-    
+
     // Show competitors on the same page with animation
     dispatch({ type: 'SET_SHOW_COMPETITORS', payload: true });
     dispatch({ type: 'SET_PREPARING_ANALYSIS', payload: false });
   }, [company]);
-  
+
   const handleProceedToPrompts = useCallback(() => {
     // Add a fade-out class to the current view
     const currentView = document.querySelector('.animate-panel-in');
     if (currentView) {
       currentView.classList.add('opacity-0');
     }
-    
+
     setTimeout(() => {
       dispatch({ type: 'SET_SHOW_COMPETITORS', payload: false });
       dispatch({ type: 'SET_SHOW_PROMPTS_LIST', payload: true });
     }, 300);
   }, []);
-  
+
   const handleAnalyze = useCallback(async () => {
     if (!company) return;
 
     // Reset saved flag for new analysis
     hasSavedRef.current = false;
 
-    // Check if user has enough credits
-    if (creditsAvailable < CREDITS_PER_BRAND_ANALYSIS) {
-      dispatch({ type: 'SET_ERROR', payload: `Insufficient credits. You need at least ${CREDITS_PER_BRAND_ANALYSIS} credits to run an analysis.` });
-      return;
-    }
+    // Note: Credit check is handled by the backend API
+    // In development mode, the backend bypasses Autumn credit checks
+    // In production, the backend will enforce credit requirements
 
     // Immediately trigger credit update to reflect deduction in navbar
     if (onCreditsUpdate) {
@@ -366,30 +365,32 @@ export function BrandMonitor({
       `Most popular ${serviceType}s today?`,
       `Recommended ${serviceType}s for developers?`
     ].filter((_, index) => !removedDefaultPrompts.includes(index));
-    
+
     const allPrompts = [...defaultPrompts, ...customPrompts];
-    
+
     // Store the prompts for UI display - make sure they're normalized
     const normalizedPrompts = allPrompts.map(p => p.trim());
     dispatch({ type: 'SET_ANALYZING_PROMPTS', payload: normalizedPrompts });
 
     console.log('Starting analysis...');
-    
+
     dispatch({ type: 'SET_ANALYZING', payload: true });
-    dispatch({ type: 'SET_ANALYSIS_PROGRESS', payload: {
-      stage: 'initializing',
-      progress: 0,
-      message: 'Starting analysis...',
-      competitors: [],
-      prompts: [],
-      partialResults: []
-    }});
+    dispatch({
+      type: 'SET_ANALYSIS_PROGRESS', payload: {
+        stage: 'initializing',
+        progress: 0,
+        message: 'Starting analysis...',
+        competitors: [],
+        prompts: [],
+        partialResults: []
+      }
+    });
     dispatch({ type: 'SET_ANALYSIS_TILES', payload: [] });
-    
+
     // Initialize prompt completion status
     const initialStatus: any = {};
     const expectedProviders = getEnabledProviders().map(config => config.name);
-    
+
     normalizedPrompts.forEach(prompt => {
       initialStatus[prompt] = {};
       expectedProviders.forEach(provider => {
@@ -402,48 +403,49 @@ export function BrandMonitor({
       await startSSEConnection('/api/brand-monitor/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          company, 
+        body: JSON.stringify({
+          company,
           prompts: normalizedPrompts,
-          competitors: identifiedCompetitors 
+          competitors: identifiedCompetitors,
+          useWebSearch
         }),
       });
     } finally {
       dispatch({ type: 'SET_ANALYZING', payload: false });
     }
   }, [company, removedDefaultPrompts, customPrompts, identifiedCompetitors, startSSEConnection, creditsAvailable]);
-  
+
   const handleRestart = useCallback(() => {
     dispatch({ type: 'RESET_STATE' });
     hasSavedRef.current = false;
     setIsLoadingExistingAnalysis(false);
   }, []);
-  
+
   const batchScrapeAndValidateCompetitors = useCallback(async (competitors: IdentifiedCompetitor[]) => {
     const validatedCompetitors = competitors.map(comp => ({
       ...comp,
       url: comp.url ? validateCompetitorUrl(comp.url) : undefined
     })).filter(comp => comp.url);
-    
+
     if (validatedCompetitors.length === 0) return;
-    
+
     // Implementation for batch scraping - you can move the full implementation here
     // For now, just logging
     console.log('Batch scraping validated competitors:', validatedCompetitors);
   }, []);
-  
-  
+
+
   // Find brand data
   const brandData = analysis?.competitors?.find(c => c.isOwn);
-  
+
   return (
     <div className="flex flex-col">
 
       {/* URL Input Section */}
+      {/* URL Input Section */}
       {showInput && (
-        <div className="flex items-center justify-center min-h-[50vh]">
-          <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
-            <UrlInputSection
+        <div className="w-full">
+          <UrlInputSection
             url={url}
             urlValid={urlValid}
             loading={loading}
@@ -451,7 +453,6 @@ export function BrandMonitor({
             onUrlChange={handleUrlChange}
             onSubmit={handleScrape}
           />
-          </div>
         </div>
       )}
 
@@ -460,21 +461,21 @@ export function BrandMonitor({
         <div className="flex items-center justify-center animate-panel-in">
           <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
             <div className="w-full space-y-6">
-            <div className={`transition-all duration-500 ${showCompanyCard ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
-              <CompanyCard 
-                company={company}
-                onAnalyze={handlePrepareAnalysis}
-                analyzing={preparingAnalysis}
-                showCompetitors={showCompetitors}
-                identifiedCompetitors={identifiedCompetitors}
-                onRemoveCompetitor={(idx) => dispatch({ type: 'REMOVE_COMPETITOR', payload: idx })}
-                onAddCompetitor={() => {
-                  dispatch({ type: 'TOGGLE_MODAL', payload: { modal: 'addCompetitor', show: true } });
-                  dispatch({ type: 'SET_NEW_COMPETITOR', payload: { name: '', url: '' } });
-                }}
-                onContinueToAnalysis={handleProceedToPrompts}
-              />
-            </div>
+              <div className={`transition-all duration-500 ${showCompanyCard ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
+                <CompanyCard
+                  company={company}
+                  onAnalyze={handlePrepareAnalysis}
+                  analyzing={preparingAnalysis}
+                  showCompetitors={showCompetitors}
+                  identifiedCompetitors={identifiedCompetitors}
+                  onRemoveCompetitor={(idx) => dispatch({ type: 'REMOVE_COMPETITOR', payload: idx })}
+                  onAddCompetitor={() => {
+                    dispatch({ type: 'TOGGLE_MODAL', payload: { modal: 'addCompetitor', show: true } });
+                    dispatch({ type: 'SET_NEW_COMPETITOR', payload: { name: '', url: '' } });
+                  }}
+                  onContinueToAnalysis={handleProceedToPrompts}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -484,26 +485,28 @@ export function BrandMonitor({
       {showPromptsList && company && !analysis && (
         <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
           <AnalysisProgressSection
-          company={company}
-          analyzing={analyzing}
-          identifiedCompetitors={identifiedCompetitors}
-          scrapingCompetitors={scrapingCompetitors}
-          analysisProgress={analysisProgress}
-          prompts={analyzingPrompts}
-          customPrompts={customPrompts}
-          removedDefaultPrompts={removedDefaultPrompts}
-          promptCompletionStatus={promptCompletionStatus}
-          onRemoveDefaultPrompt={(index) => dispatch({ type: 'REMOVE_DEFAULT_PROMPT', payload: index })}
-          onRemoveCustomPrompt={(prompt) => {
-            dispatch({ type: 'SET_CUSTOM_PROMPTS', payload: customPrompts.filter(p => p !== prompt) });
-          }}
-          onAddPromptClick={() => {
-            dispatch({ type: 'TOGGLE_MODAL', payload: { modal: 'addPrompt', show: true } });
-            dispatch({ type: 'SET_NEW_PROMPT_TEXT', payload: '' });
-          }}
-          onStartAnalysis={handleAnalyze}
-          detectServiceType={detectServiceType}
-        />
+            company={company}
+            analyzing={analyzing}
+            identifiedCompetitors={identifiedCompetitors}
+            scrapingCompetitors={scrapingCompetitors}
+            analysisProgress={analysisProgress}
+            prompts={analyzingPrompts}
+            customPrompts={customPrompts}
+            removedDefaultPrompts={removedDefaultPrompts}
+            promptCompletionStatus={promptCompletionStatus}
+            useWebSearch={useWebSearch}
+            onUseWebSearchChange={(enabled) => dispatch({ type: 'SET_USE_WEB_SEARCH', payload: enabled })}
+            onRemoveDefaultPrompt={(index) => dispatch({ type: 'REMOVE_DEFAULT_PROMPT', payload: index })}
+            onRemoveCustomPrompt={(prompt) => {
+              dispatch({ type: 'SET_CUSTOM_PROMPTS', payload: customPrompts.filter(p => p !== prompt) });
+            }}
+            onAddPromptClick={() => {
+              dispatch({ type: 'TOGGLE_MODAL', payload: { modal: 'addPrompt', show: true } });
+              dispatch({ type: 'SET_NEW_PROMPT_TEXT', payload: '' });
+            }}
+            onStartAnalysis={handleAnalyze}
+            detectServiceType={detectServiceType}
+          />
         </div>
       )}
 
@@ -512,108 +515,108 @@ export function BrandMonitor({
         <div className="flex-1 flex justify-center animate-panel-in pt-8">
           <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
             <div className="flex gap-6 relative">
-            {/* Sidebar Navigation */}
-            <ResultsNavigation
-              activeTab={activeResultsTab}
-              onTabChange={(tab) => {
-                dispatch({ type: 'SET_ACTIVE_RESULTS_TAB', payload: tab });
-              }}
-              onRestart={handleRestart}
-            />
-            
-            {/* Main Content Area */}
-            <div className="flex-1 flex flex-col">
-              <div className="w-full flex-1 flex flex-col">
-                {/* Tab Content */}
-                {activeResultsTab === 'visibility' && (
-                  <VisibilityScoreTab
-                    competitors={analysis.competitors}
-                    brandData={brandData}
-                    identifiedCompetitors={identifiedCompetitors}
-                  />
-                )}
+              {/* Sidebar Navigation */}
+              <ResultsNavigation
+                activeTab={activeResultsTab}
+                onTabChange={(tab) => {
+                  dispatch({ type: 'SET_ACTIVE_RESULTS_TAB', payload: tab });
+                }}
+                onRestart={handleRestart}
+              />
 
-                {activeResultsTab === 'matrix' && (
-                  <Card className="p-2 bg-card text-card-foreground gap-6 rounded-xl border py-6 shadow-sm border-gray-200 h-full flex flex-col">
-                    <CardHeader className="border-b">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <CardTitle className="text-xl font-semibold">Comparison Matrix</CardTitle>
-                          <CardDescription className="text-sm text-gray-600 mt-1">
-                            Compare visibility scores across different AI providers
-                          </CardDescription>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-orange-600">{brandData.visibilityScore}%</p>
-                          <p className="text-xs text-gray-500 mt-1">Average Score</p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-6 flex-1 overflow-auto">
-                      {analysis.providerComparison ? (
-                        <ProviderComparisonMatrix 
-                          data={analysis.providerComparison} 
-                          brandName={company?.name || ''} 
-                          competitors={identifiedCompetitors}
-                        />
-                      ) : (
-                        <div className="text-center py-8 text-gray-500">
-                          <p>No comparison data available</p>
-                          <p className="text-sm mt-2">Please ensure AI providers are configured and the analysis has completed.</p>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                )}
-
-                {activeResultsTab === 'rankings' && analysis.providerRankings && (
-                  <div id="provider-rankings" className="h-full">
-                    <ProviderRankingsTabs 
-                      providerRankings={analysis.providerRankings} 
-                      brandName={company?.name || 'Your Brand'}
-                      shareOfVoice={brandData.shareOfVoice}
-                      averagePosition={Math.round(brandData.averagePosition)}
-                      sentimentScore={brandData.sentimentScore}
-                      weeklyChange={brandData.weeklyChange}
+              {/* Main Content Area */}
+              <div className="flex-1 flex flex-col">
+                <div className="w-full flex-1 flex flex-col">
+                  {/* Tab Content */}
+                  {activeResultsTab === 'visibility' && (
+                    <VisibilityScoreTab
+                      competitors={analysis.competitors}
+                      brandData={brandData}
+                      identifiedCompetitors={identifiedCompetitors}
                     />
-                  </div>
-                )}
+                  )}
 
-                {activeResultsTab === 'prompts' && analysis.prompts && (
-                  <Card className="p-2 bg-card text-card-foreground gap-6 rounded-xl border py-6 shadow-sm border-gray-200 h-full flex flex-col">
-                    <CardHeader className="border-b">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <CardTitle className="text-xl font-semibold">Prompts & Responses</CardTitle>
-                          <CardDescription className="text-sm text-gray-600 mt-1">
-                            AI responses to your brand queries
-                          </CardDescription>
+                  {activeResultsTab === 'matrix' && (
+                    <Card className="p-2 bg-card text-card-foreground gap-6 rounded-xl border py-6 shadow-sm border-gray-200 h-full flex flex-col">
+                      <CardHeader className="border-b">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <CardTitle className="text-xl font-semibold">Comparison Matrix</CardTitle>
+                            <CardDescription className="text-sm text-gray-600 mt-1">
+                              Compare visibility scores across different AI providers
+                            </CardDescription>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-2xl font-bold text-emerald-600">{brandData.visibilityScore}%</p>
+                            <p className="text-xs text-gray-500 mt-1">Average Score</p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <p className="text-2xl font-bold text-orange-600">{analysis.prompts.length}</p>
-                          <p className="text-xs text-gray-500 mt-1">Total Prompts</p>
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="pt-6 flex-1 overflow-auto">
-                      <PromptsResponsesTab
-                        prompts={analysis.prompts}
-                        responses={analysis.responses}
-                        expandedPromptIndex={expandedPromptIndex}
-                        onToggleExpand={(index) => dispatch({ type: 'SET_EXPANDED_PROMPT_INDEX', payload: index })}
-                        brandName={analysis.company?.name || ''}
-                        competitors={analysis.competitors?.map(c => c.name) || []}
+                      </CardHeader>
+                      <CardContent className="pt-6 flex-1 overflow-auto">
+                        {analysis.providerComparison ? (
+                          <ProviderComparisonMatrix
+                            data={analysis.providerComparison}
+                            brandName={company?.name || ''}
+                            competitors={identifiedCompetitors}
+                          />
+                        ) : (
+                          <div className="text-center py-8 text-gray-500">
+                            <p>No comparison data available</p>
+                            <p className="text-sm mt-2">Please ensure AI providers are configured and the analysis has completed.</p>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {activeResultsTab === 'rankings' && analysis.providerRankings && (
+                    <div id="provider-rankings" className="h-full">
+                      <ProviderRankingsTabs
+                        providerRankings={analysis.providerRankings}
+                        brandName={company?.name || 'Your Brand'}
+                        shareOfVoice={brandData.shareOfVoice}
+                        averagePosition={Math.round(brandData.averagePosition)}
+                        sentimentScore={brandData.sentimentScore}
+                        weeklyChange={brandData.weeklyChange}
                       />
-                    </CardContent>
-                  </Card>
-                )}
+                    </div>
+                  )}
+
+                  {activeResultsTab === 'prompts' && analysis.prompts && (
+                    <Card className="p-2 bg-card text-card-foreground gap-6 rounded-xl border py-6 shadow-sm border-gray-200 h-full flex flex-col">
+                      <CardHeader className="border-b">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <CardTitle className="text-xl font-semibold">Prompts & Responses</CardTitle>
+                            <CardDescription className="text-sm text-gray-600 mt-1">
+                              AI responses to your brand queries
+                            </CardDescription>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-2xl font-bold text-emerald-600">{analysis.prompts.length}</p>
+                            <p className="text-xs text-gray-500 mt-1">Total Prompts</p>
+                          </div>
+                        </div>
+                      </CardHeader>
+                      <CardContent className="pt-6 flex-1 overflow-auto">
+                        <PromptsResponsesTab
+                          prompts={analysis.prompts}
+                          responses={analysis.responses}
+                          expandedPromptIndex={expandedPromptIndex}
+                          onToggleExpand={(index) => dispatch({ type: 'SET_EXPANDED_PROMPT_INDEX', payload: index })}
+                          brandName={analysis.company?.name || ''}
+                          competitors={analysis.competitors?.map(c => c.name) || []}
+                        />
+                      </CardContent>
+                    </Card>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-          </div>
         </div>
       )}
-      
+
       {/* Error message */}
       {error && (
         <ErrorMessage
@@ -621,7 +624,7 @@ export function BrandMonitor({
           onDismiss={() => dispatch({ type: 'SET_ERROR', payload: null })}
         />
       )}
-      
+
       {/* Modals */}
       <AddPromptModal
         isOpen={showAddPromptModal}
@@ -650,16 +653,16 @@ export function BrandMonitor({
           if (newCompetitorName.trim()) {
             const rawUrl = newCompetitorUrl.trim();
             const validatedUrl = rawUrl ? validateCompetitorUrl(rawUrl) : undefined;
-            
+
             const newCompetitor: IdentifiedCompetitor = {
               name: newCompetitorName.trim(),
               url: validatedUrl
             };
-            
+
             dispatch({ type: 'ADD_COMPETITOR', payload: newCompetitor });
             dispatch({ type: 'TOGGLE_MODAL', payload: { modal: 'addCompetitor', show: false } });
             dispatch({ type: 'SET_NEW_COMPETITOR', payload: { name: '', url: '' } });
-            
+
             // Batch scrape and validate the new competitor if it has a URL
             if (newCompetitor.url) {
               await batchScrapeAndValidateCompetitors([newCompetitor]);

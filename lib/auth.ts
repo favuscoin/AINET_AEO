@@ -14,7 +14,7 @@ export const auth = betterAuth({
     requireEmailVerification: false, // Set to true to require email verification
     sendResetPassword: async ({ user, url }, request) => {
       console.log('Password reset link:', url);
-      
+
       await sendEmail({
         to: user.email,
         subject: 'Reset your password - Fire SaaS',
@@ -56,7 +56,7 @@ export const auth = betterAuth({
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }, request) => {
       console.log('Verification link:', url);
-      
+
       await sendEmail({
         to: user.email,
         subject: 'Verify your email - Fire SaaS',

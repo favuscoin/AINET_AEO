@@ -18,7 +18,7 @@ function LoginForm() {
     if (searchParams.get('reset') === 'success') {
       setSuccess('Password reset successfully. You can now login with your new password.');
     }
-    
+
     // Pre-fill email if passed from registration page
     const emailParam = searchParams.get('email');
     if (emailParam) {
@@ -36,13 +36,13 @@ function LoginForm() {
         email,
         password,
       });
-      
+
       if (response.error) {
         setError(response.error.message || 'Failed to login');
         setLoading(false);
         return;
       }
-      
+
       // Use router for client-side navigation after successful login
       const returnUrl = searchParams.get('from') || '/dashboard';
       window.location.replace(returnUrl);
@@ -54,9 +54,9 @@ function LoginForm() {
 
   return (
     <div className="min-h-screen flex">
-      {/* Left side - Orange gradient */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-orange-400 via-orange-500 to-orange-600 p-12 items-center justify-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-400/90 via-orange-500/90 to-orange-600/90" />
+      {/* Left side - Mint gradient */}
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-300 via-emerald-400 to-emerald-500 p-12 items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-300/90 via-emerald-400/90 to-emerald-500/90" />
         <div className="relative z-10 max-w-md text-white">
           <h1 className="text-4xl font-bold mb-4">Welcome back!</h1>
           <p className="text-lg opacity-90">
@@ -64,8 +64,8 @@ function LoginForm() {
           </p>
         </div>
         {/* Decorative elements */}
-        <div className="absolute top-20 right-20 w-64 h-64 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob" />
-        <div className="absolute bottom-20 left-20 w-64 h-64 bg-orange-300 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000" />
+        <div className="absolute top-20 right-20 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob" />
+        <div className="absolute bottom-20 left-20 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob animation-delay-2000" />
       </div>
 
       {/* Right side - Form */}
@@ -74,10 +74,10 @@ function LoginForm() {
           <div>
             <div className="lg:hidden mb-8 flex justify-center">
               <Image
-                src="/firecrawl-logo-with-fire.webp"
-                alt="Firecrawl"
-                width={180}
-                height={37}
+                src="/airternet-logo.png"
+                alt="AIrternet"
+                width={90}
+                height={18}
                 priority
               />
             </div>
@@ -86,7 +86,7 @@ function LoginForm() {
             </h2>
             <p className="mt-2 text-center text-sm text-gray-600">
               Or{' '}
-              <Link href="/register" className="font-medium text-orange-600 hover:text-orange-500">
+              <Link href="/register" className="font-medium text-emerald-600 hover:text-emerald-500">
                 create a new account
               </Link>
             </p>
@@ -105,7 +105,7 @@ function LoginForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   placeholder="Enter your email"
                 />
               </div>
@@ -121,7 +121,7 @@ function LoginForm() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm"
                   placeholder="Enter your password"
                 />
               </div>
@@ -133,13 +133,13 @@ function LoginForm() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                   Remember me
                 </label>
               </div>
-              <Link href="/forgot-password" className="text-sm text-orange-600 hover:text-orange-500">
+              <Link href="/forgot-password" className="text-sm text-emerald-600 hover:text-emerald-500">
                 Forgot your password?
               </Link>
             </div>
@@ -160,7 +160,7 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={loading}
-                className="btn-firecrawl-default w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 h-10 px-4"
+                className="btn-ainet-default w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 h-10 px-4"
               >
                 {loading ? 'Signing in...' : 'Sign in'}
               </button>

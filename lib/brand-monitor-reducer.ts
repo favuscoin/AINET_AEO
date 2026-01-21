@@ -34,6 +34,7 @@ export type BrandMonitorAction =
   | { type: 'TOGGLE_MODAL'; payload: { modal: 'addPrompt' | 'addCompetitor'; show: boolean } }
   | { type: 'SET_NEW_PROMPT_TEXT'; payload: string }
   | { type: 'SET_NEW_COMPETITOR'; payload: { name?: string; url?: string } }
+  | { type: 'SET_USE_WEB_SEARCH'; payload: boolean }
   | { type: 'RESET_STATE' }
   | { type: 'SCRAPE_SUCCESS'; payload: Company }
   | { type: 'ANALYSIS_COMPLETE'; payload: Analysis };
@@ -110,51 +111,54 @@ export interface BrandMonitorState {
   url: string;
   urlValid: boolean | null;
   error: string | null;
-  
+
   // Loading states
   loading: boolean;
   analyzing: boolean;
   preparingAnalysis: boolean;
   scrapingCompetitors: boolean;
-  
+
   // Core data
   company: Company | null;
   analysis: Analysis | null;
-  
+
   // UI state
   showInput: boolean;
   showCompanyCard: boolean;
   showPromptsList: boolean;
   showCompetitors: boolean;
-  
+
   // Prompts
   customPrompts: string[];
   removedDefaultPrompts: number[];
   analyzingPrompts: string[];
-  
+
   // Competitors
   identifiedCompetitors: IdentifiedCompetitor[];
-  
+
   // Providers
   availableProviders: string[];
-  
+
   // Analysis progress
   analysisProgress: AnalysisProgressState;
   promptCompletionStatus: PromptCompletionStatus;
   analysisTiles: AnalysisTile[];
   statusUpdateCount: number;
-  
+
   // Results view
   activeResultsTab: ResultsTab;
   expandedPromptIndex: number | null;
   currentPeriod: boolean;
-  
+
   // Modals
   showAddPromptModal: boolean;
   showAddCompetitorModal: boolean;
   newPromptText: string;
   newCompetitorName: string;
   newCompetitorUrl: string;
+
+  // Analysis options
+  useWebSearch: boolean;
 }
 
 // Initial State
@@ -195,97 +199,98 @@ export const initialBrandMonitorState: BrandMonitorState = {
   showAddCompetitorModal: false,
   newPromptText: '',
   newCompetitorName: '',
-  newCompetitorUrl: ''
+  newCompetitorUrl: '',
+  useWebSearch: true // Default to true for current, real-time data
 };
 
 // Reducer
 export function brandMonitorReducer(
-  state: BrandMonitorState, 
+  state: BrandMonitorState,
   action: BrandMonitorAction
 ): BrandMonitorState {
   switch (action.type) {
     case 'SET_URL':
       return { ...state, url: action.payload };
-      
+
     case 'SET_URL_VALID':
       return { ...state, urlValid: action.payload };
-      
+
     case 'SET_ERROR':
       return { ...state, error: action.payload };
-      
+
     case 'SET_LOADING':
       return { ...state, loading: action.payload };
-      
+
     case 'SET_ANALYZING':
       return { ...state, analyzing: action.payload };
-      
+
     case 'SET_PREPARING_ANALYSIS':
       return { ...state, preparingAnalysis: action.payload };
-      
+
     case 'SET_COMPANY':
       return { ...state, company: action.payload };
-      
+
     case 'SET_SHOW_INPUT':
       return { ...state, showInput: action.payload };
-      
+
     case 'SET_SHOW_COMPANY_CARD':
       return { ...state, showCompanyCard: action.payload };
-      
+
     case 'SET_SHOW_PROMPTS_LIST':
       return { ...state, showPromptsList: action.payload };
-      
+
     case 'SET_SHOW_COMPETITORS':
       return { ...state, showCompetitors: action.payload };
-      
+
     case 'SET_CUSTOM_PROMPTS':
       return { ...state, customPrompts: action.payload };
-      
+
     case 'ADD_CUSTOM_PROMPT':
       return { ...state, customPrompts: [...state.customPrompts, action.payload] };
-      
+
     case 'REMOVE_DEFAULT_PROMPT':
       return { ...state, removedDefaultPrompts: [...state.removedDefaultPrompts, action.payload] };
-      
+
     case 'SET_AVAILABLE_PROVIDERS':
       return { ...state, availableProviders: action.payload };
-      
+
     case 'SET_IDENTIFIED_COMPETITORS':
       return { ...state, identifiedCompetitors: action.payload };
-      
+
     case 'REMOVE_COMPETITOR':
-      return { 
-        ...state, 
-        identifiedCompetitors: state.identifiedCompetitors.filter((_, i) => i !== action.payload) 
+      return {
+        ...state,
+        identifiedCompetitors: state.identifiedCompetitors.filter((_, i) => i !== action.payload)
       };
-      
+
     case 'ADD_COMPETITOR':
-      return { 
-        ...state, 
-        identifiedCompetitors: [...state.identifiedCompetitors, action.payload] 
+      return {
+        ...state,
+        identifiedCompetitors: [...state.identifiedCompetitors, action.payload]
       };
-      
+
     case 'UPDATE_COMPETITOR_METADATA':
       return {
         ...state,
         identifiedCompetitors: state.identifiedCompetitors.map((comp, idx) =>
-          idx === action.payload.index 
+          idx === action.payload.index
             ? { ...comp, metadata: action.payload.metadata }
             : comp
         )
       };
-      
+
     case 'SET_ANALYSIS_PROGRESS':
       return { ...state, analysisProgress: action.payload };
-      
+
     case 'UPDATE_ANALYSIS_PROGRESS':
-      return { 
-        ...state, 
-        analysisProgress: { ...state.analysisProgress, ...action.payload } 
+      return {
+        ...state,
+        analysisProgress: { ...state.analysisProgress, ...action.payload }
       };
-      
+
     case 'SET_PROMPT_COMPLETION_STATUS':
       return { ...state, promptCompletionStatus: action.payload };
-      
+
     case 'UPDATE_PROMPT_STATUS':
       const { prompt, provider, status } = action.payload;
       const normalizedPrompt = prompt.trim();
@@ -300,13 +305,13 @@ export function brandMonitorReducer(
         },
         statusUpdateCount: state.statusUpdateCount + 1
       };
-      
+
     case 'SET_ANALYZING_PROMPTS':
       return { ...state, analyzingPrompts: action.payload };
-      
+
     case 'SET_ANALYSIS_TILES':
       return { ...state, analysisTiles: action.payload };
-      
+
     case 'UPDATE_ANALYSIS_TILE':
       return {
         ...state,
@@ -314,36 +319,39 @@ export function brandMonitorReducer(
           idx === action.payload.index ? action.payload.tile : tile
         )
       };
-      
+
     case 'SET_ANALYSIS':
       return { ...state, analysis: action.payload };
-      
+
     case 'SET_ACTIVE_RESULTS_TAB':
       return { ...state, activeResultsTab: action.payload };
-      
+
     case 'SET_EXPANDED_PROMPT_INDEX':
       return { ...state, expandedPromptIndex: action.payload };
-      
+
     case 'TOGGLE_MODAL':
       if (action.payload.modal === 'addPrompt') {
         return { ...state, showAddPromptModal: action.payload.show };
       } else {
         return { ...state, showAddCompetitorModal: action.payload.show };
       }
-      
+
     case 'SET_NEW_PROMPT_TEXT':
       return { ...state, newPromptText: action.payload };
-      
+
     case 'SET_NEW_COMPETITOR':
       return {
         ...state,
         ...(action.payload.name !== undefined && { newCompetitorName: action.payload.name }),
         ...(action.payload.url !== undefined && { newCompetitorUrl: action.payload.url })
       };
-      
+
+    case 'SET_USE_WEB_SEARCH':
+      return { ...state, useWebSearch: action.payload };
+
     case 'RESET_STATE':
       return initialBrandMonitorState;
-      
+
     case 'SCRAPE_SUCCESS':
       return {
         ...state,
@@ -352,14 +360,14 @@ export function brandMonitorReducer(
         loading: false,
         error: null
       };
-      
+
     case 'ANALYSIS_COMPLETE':
       return {
         ...state,
         analysis: action.payload,
         analyzing: false
       };
-      
+
     default:
       return state;
   }

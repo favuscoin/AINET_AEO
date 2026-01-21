@@ -1,9 +1,10 @@
+import '@/lib/ssr-polyfill';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/navbar";
-import { Footer } from "@/components/footer";
 import { Providers } from "@/components/providers";
+import { ConditionalFooter } from "@/components/conditional-footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,8 +17,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SaaS Starter",
-  description: "Next.js SaaS Starter with Better Auth",
+  title: "AINET | Turn AI Traffic Into Revenue",
+  description: "See where you appear in AI Search",
+  icons: {
+    icon: [
+      { url: '/favicon-16.svg', sizes: '16x16', type: 'image/svg+xml' },
+      { url: '/favicon-32.svg', sizes: '32x32', type: 'image/svg+xml' },
+    ],
+  },
 };
 
 export default function RootLayout({
@@ -26,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -36,7 +43,7 @@ export default function RootLayout({
             <main className="flex-grow">
               {children}
             </main>
-            <Footer />
+            <ConditionalFooter />
           </div>
         </Providers>
       </body>

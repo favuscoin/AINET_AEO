@@ -28,8 +28,82 @@ export default function PricingTable({
     );
   }
 
-  if (error) {
-    return <div> Something went wrong...</div>;
+  const isDev = process.env.NODE_ENV === 'development';
+
+  // Mock data for development mode fallback
+  const mockProducts = [
+    {
+      id: "free",
+      name: "Free",
+      scenario: "new",
+      properties: { is_free: true, interval_group: "month" },
+      display: {
+        name: "Free",
+        description: "Perfect for trying out our service",
+        button_text: "Start free",
+      },
+      items: [
+        { display: { primary_text: "Free", secondary_text: "No credit card required" } },
+        { display: { primary_text: "10 messages per month", secondary_text: "AI-powered chat responses" } },
+        { display: { primary_text: "Community support", secondary_text: "Get help from our community" } },
+        { display: { primary_text: "Basic features", secondary_text: "Essential tools to get started" } }
+      ]
+    },
+    {
+      id: "pro",
+      name: "Pro",
+      scenario: "new",
+      properties: { is_free: false, interval_group: "month" },
+      display: {
+        name: "Pro",
+        description: "For all your messaging needs",
+        recommend_text: "Most Popular",
+        button_text: "Get started",
+      },
+      items: [
+        { display: { primary_text: "$499/month", secondary_text: "billed monthly" } },
+        { display: { primary_text: "100 messages per month", secondary_text: "AI-powered chat responses" } },
+        { display: { primary_text: "Premium support", secondary_text: "Get help from our team" } },
+        { display: { primary_text: "Priority access", secondary_text: "Be first to try new features" } }
+      ]
+    },
+    {
+      id: "enterprise",
+      name: "Enterprise",
+      scenario: "new",
+      properties: { is_free: false, interval_group: "month" },
+      display: {
+        name: "Enterprise",
+        description: "For large teams",
+        button_text: "Contact sales",
+      },
+      items: [
+        { display: { primary_text: "Custom", secondary_text: "Contact us for pricing" } },
+        { display: { primary_text: "Unlimited messages", secondary_text: "Scale as you grow" } },
+        { display: { primary_text: "Custom features", secondary_text: "Built for your needs" } },
+        { display: { primary_text: "Dedicated support", secondary_text: "24/7 priority help" } }
+      ]
+    }
+  ];
+
+  // Map products or fallback to mock data in dev
+  const displayProducts = error && isDev ? mockProducts : products;
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-full flex justify-center items-center min-h-[300px]">
+        <Loader2 className="w-6 h-6 text-emerald-500 animate-spin" />
+      </div>
+    );
+  }
+
+  if (error && !isDev) {
+    return (
+      <div className="p-8 text-center bg-gray-50 rounded-lg border border-dashed border-gray-300">
+        <p className="text-gray-500 mb-2">Something went wrong while loading plans...</p>
+        <p className="text-sm text-gray-400">Please try again later or contact support.</p>
+      </div>
+    );
   }
 
   const intervals = Array.from(
@@ -58,14 +132,14 @@ export default function PricingTable({
 
   return (
     <div className={cn("root")}>
-      {products && (
+      {displayProducts && (
         <PricingTableContainer
-          products={products as any}
+          products={displayProducts as any}
           isAnnualToggle={isAnnual}
           setIsAnnualToggle={setIsAnnual}
           multiInterval={multiInterval}
         >
-          {products.filter(intervalFilter).map((product, index) => (
+          {displayProducts.filter(intervalFilter).map((product, index) => (
             <PricingCard
               key={index}
               productId={product.id}
@@ -75,7 +149,7 @@ export default function PricingTable({
                   product.scenario === "scheduled",
 
                 onClick: async () => {
-                  if (product.id) {
+                  if (product.id && !isDev) {
                     await attach({
                       productId: product.id,
                       dialog: AttachDialog,
@@ -83,8 +157,10 @@ export default function PricingTable({
                       successUrl: window.location.origin + '/dashboard',
                       cancelUrl: window.location.origin + '/pricing',
                     });
-                  } else if (product.display?.button_url) {
-                    window.open(product.display?.button_url, "_blank");
+                  } else {
+                    // Mock behavior for dev
+                    console.log('[DEV] Mock redirect to register for:', product.id);
+                    window.location.href = '/register';
                   }
                 },
               }}
@@ -103,7 +179,7 @@ const PricingTableContext = createContext<{
   showFeatures: boolean;
 }>({
   isAnnualToggle: false,
-  setIsAnnualToggle: () => {},
+  setIsAnnualToggle: () => { },
   products: [],
   showFeatures: true,
 });
@@ -206,8 +282,8 @@ export const PricingCard = ({
   const isRecommended = productDisplay?.recommend_text ? true : false;
   const mainPriceDisplay = product.properties?.is_free
     ? {
-        primary_text: "Free",
-      }
+      primary_text: "Free",
+    }
     : product.items[0].display;
 
   const featureItems = product.properties?.is_free
@@ -217,9 +293,9 @@ export const PricingCard = ({
   return (
     <div
       className={cn(
-        " w-full h-full py-6 text-foreground border rounded-lg shadow-sm max-w-xl",
+        "relative w-full h-full py-6 text-foreground border rounded-lg shadow-sm max-w-xl",
         isRecommended &&
-          "lg:-translate-y-6 lg:shadow-lg dark:shadow-zinc-800/80 lg:h-[calc(100%+48px)] bg-secondary/40",
+        "lg:-translate-y-6 lg:shadow-lg dark:shadow-zinc-800/80 lg:h-[calc(100%+48px)] bg-secondary/40",
         className
       )}
     >
@@ -354,7 +430,7 @@ export const PricingCardButton = React.forwardRef<
     <button
       className={cn(
         "w-full py-3 px-4 group overflow-hidden relative transition-all duration-300 border rounded-[10px] inline-flex items-center justify-center whitespace-nowrap text-sm font-medium disabled:pointer-events-none disabled:opacity-50",
-        recommended ? "btn-firecrawl-orange" : "btn-firecrawl-default",
+        recommended ? "btn-ainet-mint" : "btn-ainet-default",
         className
       )}
       {...props}

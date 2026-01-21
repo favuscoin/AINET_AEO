@@ -24,12 +24,12 @@ export async function scrapeCompanyInfo(url: string, maxAge?: number): Promise<C
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
       normalizedUrl = `https://${normalizedUrl}`;
     }
-    
+
     // Default to 1 week cache if not specified
     const cacheAge = maxAge ? Math.floor(maxAge / 1000) : 604800; // 1 week in seconds
-    
+
     // For demo purposes, we'll use a simplified approach
-    // In production, you'd want to use a proper scraping service like Firecrawl
+    // In production, you'd want to use a proper scraping service like AINET
     const response = await firecrawl.scrapeUrl(normalizedUrl, {
       formats: ['markdown'],
       maxAge: cacheAge,
@@ -39,21 +39,21 @@ export async function scrapeCompanyInfo(url: string, maxAge?: number): Promise<C
     }
     const html = response.markdown;
     const metadata = response.metadata;
-    
+
 
     // Use AI to extract structured information - use first available provider
     const configuredProviders = getConfiguredProviders();
     if (configuredProviders.length === 0) {
       throw new Error('No AI providers configured and enabled for content extraction');
     }
-    
+
     // Use the first available provider with a fast model
     const provider = configuredProviders[0];
     const model = getProviderModel(provider.id, provider.models.find(m => m.name.toLowerCase().includes('mini') || m.name.toLowerCase().includes('flash'))?.id || provider.defaultModel);
     if (!model) {
       throw new Error(`${provider.name} model not available`);
     }
-    
+
     const { object } = await generateObject({
       model,
       schema: CompanyInfoSchema,
@@ -86,12 +86,12 @@ export async function scrapeCompanyInfo(url: string, maxAge?: number): Promise<C
     // Extract favicon URL - try multiple sources
     const urlObj = new URL(normalizedUrl);
     const domain = urlObj.hostname.replace('www.', '');
-    
+
     // Try to get a high-quality favicon from various sources
-    const faviconUrl = metadata?.favicon || 
-                      `https://www.google.com/s2/favicons?domain=${domain}&sz=128` ||
-                      `${urlObj.origin}/favicon.ico`;
-    
+    const faviconUrl = metadata?.favicon ||
+      `https://www.google.com/s2/favicons?domain=${domain}&sz=128` ||
+      `${urlObj.origin}/favicon.ico`;
+
     return {
       id: crypto.randomUUID(),
       url: normalizedUrl,
@@ -114,13 +114,13 @@ export async function scrapeCompanyInfo(url: string, maxAge?: number): Promise<C
     };
   } catch (error) {
     console.error('Error scraping company info:', error);
-    
+
     // Ensure URL has protocol for fallback
     let normalizedUrl = url.trim();
     if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
       normalizedUrl = `https://${normalizedUrl}`;
     }
-    
+
     // Fallback: extract company name from URL
     const urlObj = new URL(normalizedUrl);
     const domain = urlObj.hostname.replace('www.', '');

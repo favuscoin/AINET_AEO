@@ -1,407 +1,212 @@
 'use client';
 
-import Link from "next/link";
-import { useState } from "react";
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect } from 'react';
 
-export default function Home() {
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+export default function P0Page() {
+    useEffect(() => {
+        // Set body background to match hero section
+        document.body.style.backgroundImage = 'url(/p0/bg0.svg)';
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundRepeat = 'no-repeat';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundAttachment = 'fixed';
+        document.body.style.backgroundColor = '#F3F2F0';
 
-  const toggleFaq = (index: number) => {
-    setOpenFaq(openFaq === index ? null : index);
-  };
+        // Cleanup on unmount
+        return () => {
+            document.body.style.backgroundImage = '';
+            document.body.style.backgroundSize = '';
+            document.body.style.backgroundRepeat = '';
+            document.body.style.backgroundPosition = '';
+            document.body.style.backgroundAttachment = '';
+            document.body.style.backgroundColor = '';
+        };
+    }, []);
 
-  return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-white pt-16 pb-24">
-        
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-5xl lg:text-7xl font-bold tracking-tight mb-8 animate-fade-in-up">
-              <span className="block text-zinc-900">FireGEO Monitor</span>
-              <span className="block bg-gradient-to-r from-red-600 to-yellow-500 bg-clip-text text-transparent">
-                AI Brand Visibility Platform
-              </span>
-            </h1>
-            <p className="text-xl lg:text-2xl text-zinc-600 max-w-3xl mx-auto mb-6 animate-fade-in-up animation-delay-200">
-              Track how AI models rank your brand against competitors
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-400">
-              <Link
-                href="/brand-monitor"
-                className="btn-firecrawl-orange inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[10px] text-base font-medium transition-all duration-200 h-12 px-8"
-              >
-                Start Brand Analysis
-              </Link>
-              <Link
-                href="/plans"
-                className="btn-firecrawl-default inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-[10px] text-base font-medium transition-all duration-200 h-12 px-8"
-              >
-                View Pricing
-              </Link>
-            </div>
-            <p className="mt-6 text-sm text-zinc-500 animate-fade-in-up animation-delay-600">
-              Powered by AI • Real-time Analysis • Competitor Tracking • SEO Insights
-            </p>
-          </div>
-
-          {/* Stats */}
-          <div className="mt-20 bg-zinc-900 rounded-[20px] p-12 animate-fade-in-scale animation-delay-800">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-              <div className="text-center animate-fade-in-up animation-delay-1000">
-                <div className="text-4xl font-bold text-white">ChatGPT</div>
-                <div className="text-sm text-zinc-400 mt-1">Claude, Perplexity & More</div>
-              </div>
-              <div className="text-center animate-fade-in-up animation-delay-1000" style={{animationDelay: '1100ms'}}>
-                <div className="text-4xl font-bold text-white">Real-time</div>
-                <div className="text-sm text-zinc-400 mt-1">Analysis</div>
-              </div>
-              <div className="text-center animate-fade-in-up animation-delay-1000" style={{animationDelay: '1200ms'}}>
-                <div className="text-4xl font-bold text-white">Competitor</div>
-                <div className="text-sm text-zinc-400 mt-1">Tracking</div>
-              </div>
-              <div className="text-center animate-fade-in-up animation-delay-1000" style={{animationDelay: '1300ms'}}>
-                <div className="text-4xl font-bold text-white">Actionable</div>
-                <div className="text-sm text-zinc-400 mt-1">Insights</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="py-24 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gray-50 rounded-[30px] p-16">
-            <div className="text-center mb-16">
-              <h2 className="text-4xl font-bold text-zinc-900 mb-4">
-                Monitor Your Brand Visibility
-              </h2>
-              <p className="text-xl text-zinc-600">
-                Choose the plan that fits your monitoring needs
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Starter */}
-            <div className="bg-white p-8 rounded-[20px] border border-zinc-200 animate-fade-in-up animation-delay-400 hover:scale-105 transition-all duration-200">
-              <h3 className="text-2xl font-bold mb-2">Starter</h3>
-              <p className="text-zinc-600 mb-6">Perfect for personal brands</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold">$0</span>
-                <span className="text-zinc-600">/month</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  10 brand analyses/month
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Basic AI providers
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Email reports
-                </li>
-              </ul>
-              <Link
-                href="/register"
-                className="btn-firecrawl-outline w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
-              >
-                Start free
-              </Link>
-            </div>
-
-            {/* Pro - Featured */}
-            <div className="bg-white p-8 rounded-[20px] border-2 border-orange-500 relative animate-fade-in-up animation-delay-600 hover:scale-105 transition-all duration-200">
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-orange-500 text-white px-4 py-1 rounded-full text-sm font-medium">
-                Most Popular
-              </div>
-              <h3 className="text-2xl font-bold mb-2">Pro</h3>
-              <p className="text-zinc-600 mb-6">For growing businesses</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold">$49</span>
-                <span className="text-zinc-600">/month</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Unlimited brand analyses
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  All AI providers
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Real-time alerts
-                </li>
-              </ul>
-              <Link
-                href="/register"
-                className="btn-firecrawl-orange w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
-              >
-                Start free trial
-              </Link>
-            </div>
-
-            {/* Enterprise */}
-            <div className="bg-white p-8 rounded-[20px] border border-zinc-200 animate-fade-in-up animation-delay-800 hover:scale-105 transition-all duration-200">
-              <h3 className="text-2xl font-bold mb-2">Enterprise</h3>
-              <p className="text-zinc-600 mb-6">For agencies & large brands</p>
-              <div className="mb-6">
-                <span className="text-4xl font-bold">Custom</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Multiple brands
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  API access
-                </li>
-                <li className="flex items-center">
-                  <svg className="w-5 h-5 text-green-500 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  White-label options
-                </li>
-              </ul>
-              <Link
-                href="/contact"
-                className="btn-firecrawl-outline w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
-              >
-                Contact sales
-              </Link>
-            </div>
-            </div>
-
-            <div className="text-center mt-12">
-              <Link href="/plans" className="text-orange-600 hover:text-orange-700 font-medium">
-                View detailed pricing →
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* CTA Section 1 */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-orange-500 to-orange-600 rounded-[30px] p-16 text-center">
-            <h2 className="text-4xl font-bold text-white mb-6">
-              See How AI Models Rank Your Brand
-            </h2>
-            <p className="text-xl text-orange-100 mb-8">
-              Monitor your brand visibility across ChatGPT, Claude, Perplexity and more
-            </p>
-            <Link
-              href="/brand-monitor"
-              className="btn-firecrawl-default inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-base font-medium transition-all duration-200 h-12 px-8"
+    return (
+        <div
+            className="min-h-screen"
+        >
+            {/* Hero Section */}
+            <section
+                className="relative bg-[#F3F2F0]"
+                style={{
+                    backgroundImage: 'url(/p0/bg0.svg)',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center'
+                }}
             >
-              Start Free Analysis
-            </Link>
-          </div>
-        </div>
-      </section>
+                <div className="pt-24 md:pt-32 pb-0">
+                    <div className="max-w-[1170px] mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center">
+                            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-normal leading-[98%] tracking-[-1px] text-black mb-3 md:mb-4">
+                                Turn AI Traffic Into <br />Revenue with AINET
+                            </h1>
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
+                                <Link
+                                    href="/dashboard-pro"
+                                    className="w-full sm:w-auto bg-[#AEEBD1] text-[#1E1B30] px-6 md:px-8 py-4 md:py-5 rounded-[110px] text-xs font-medium uppercase tracking-wider hover:bg-[#1E1B30] hover:text-white transition-all text-center"
+                                >
+                                    get early access
+                                </Link>
+                                <Link
+                                    href="https://x.com/AINETdotcc"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-full sm:w-auto bg-[#1E1B30] text-white px-6 md:px-8 py-4 md:py-5 rounded-[110px] text-xs font-medium uppercase tracking-wider hover:bg-white hover:text-[#1E1B30] transition-all text-center"
+                                >
+                                    contact us
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                    {/* Image container - network diagram */}
+                    <div className="mt-8 md:mt-12 lg:mt-16 relative">
+                        <div className="max-w-[1170px] mx-auto pl-4 sm:pl-6 lg:pl-8">
+                            <div className="relative">
+                                <Image
+                                    src="/p0/a1.svg"
+                                    alt="Internet of Agents Network"
+                                    width={1170}
+                                    height={400}
+                                    className="w-full h-auto max-w-none"
+                                    priority
+                                />
+                            </div>
+                        </div>
 
-
-      {/* FAQs */}
-      <section className="py-24 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-zinc-900 mb-4 animate-fade-in-up">
-              Frequently asked questions
-            </h2>
-            <p className="text-xl text-zinc-600 animate-fade-in-up animation-delay-200">
-              Everything you need to know about FireGEO Monitor
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            {/* FAQ 1 */}
-            <div className="bg-gray-50 rounded-[15px] overflow-hidden animate-fade-in-up animation-delay-400">
-              <button
-                onClick={() => toggleFaq(0)}
-                className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-100 transition-colors"
-              >
-                <h3 className="text-lg font-semibold text-zinc-900">
-                  How does FireGEO Monitor work?
-                </h3>
-                <svg
-                  className={`w-5 h-5 text-zinc-500 transition-transform ${openFaq === 0 ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {openFaq === 0 && (
-                <div className="px-6 py-6">
-                  <p className="text-zinc-600 leading-relaxed">
-                    FireGEO Monitor analyzes your brand's visibility across major AI platforms like ChatGPT, Claude, and Perplexity. Simply enter your website URL, and we'll show you how AI models rank your brand against competitors, what prompts trigger your appearance, and provide actionable insights to improve your AI visibility.
-                  </p>
+                        {/* Decorative buttons graphic at bottom center */}
+                        <div className="absolute bottom-16 md:bottom-20 lg:bottom-24 left-1/2 transform -translate-x-1/2 w-full max-w-xs md:max-w-md lg:max-w-lg px-4">
+                            <Image
+                                src="/p0/buttons.svg"
+                                alt="AINET Features"
+                                width={600}
+                                height={100}
+                                className="w-full h-auto"
+                            />
+                        </div>
+                    </div>
                 </div>
-              )}
-            </div>
+            </section>
 
-            {/* FAQ 2 */}
-            <div className="bg-gray-50 rounded-[15px] overflow-hidden animate-fade-in-up animation-delay-400" style={{animationDelay: '500ms'}}>
-              <button
-                onClick={() => toggleFaq(1)}
-                className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-100 transition-colors"
-              >
-                <h3 className="text-lg font-semibold text-zinc-900">
-                  Which AI providers do you monitor?
-                </h3>
-                <svg
-                  className={`w-5 h-5 text-zinc-500 transition-transform ${openFaq === 1 ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {openFaq === 1 && (
-                <div className="px-6 py-6">
-                  <p className="text-zinc-600 leading-relaxed">
-                    We monitor all major AI platforms including OpenAI's ChatGPT, Anthropic's Claude, Perplexity, Google's Gemini, and more. Our system continuously updates as new AI providers emerge, ensuring you always have comprehensive visibility across the AI landscape.
-                  </p>
+            {/* Mission Section */}
+            <section className="bg-white py-12 md:py-16 lg:py-20">
+                <div className="max-w-[1170px] mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="max-w-[692px] mx-auto text-center">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-[44px] font-normal leading-[128%] tracking-[-1px] text-[#A1A1A1]">
+                            <span className="text-black">
+                                AInternet rebuilds the internet's economic layer{' '}
+                                <span className="hidden sm:inline"><br /></span>
+                                for the agent-native web,
+                            </span>
+                            <br />
+                            starting with the marketing platform for the age of superintelligence
+                        </h2>
+                    </div>
                 </div>
-              )}
-            </div>
+            </section>
 
-            {/* FAQ 3 */}
-            <div className="bg-gray-50 rounded-[15px] overflow-hidden animate-fade-in-up animation-delay-600">
-              <button
-                onClick={() => toggleFaq(2)}
-                className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-100 transition-colors"
-              >
-                <h3 className="text-lg font-semibold text-zinc-900">
-                  How often is the data updated?
-                </h3>
-                <svg
-                  className={`w-5 h-5 text-zinc-500 transition-transform ${openFaq === 2 ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {openFaq === 2 && (
-                <div className="px-6 py-6">
-                  <p className="text-zinc-600 leading-relaxed">
-                    Our monitoring runs in real-time. When you request an analysis, we query all AI providers simultaneously to get the most current results. You can run new analyses anytime to track changes in your brand visibility and see how your optimization efforts are performing.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 4 */}
-            <div className="bg-gray-50 rounded-[15px] overflow-hidden animate-fade-in-up animation-delay-400" style={{animationDelay: '700ms'}}>
-              <button
-                onClick={() => toggleFaq(3)}
-                className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-100 transition-colors"
-              >
-                <h3 className="text-lg font-semibold text-zinc-900">
-                  What insights will I get?
-                </h3>
-                <svg
-                  className={`w-5 h-5 text-zinc-500 transition-transform ${openFaq === 3 ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {openFaq === 3 && (
-                <div className="px-6 py-6">
-                  <p className="text-zinc-600 leading-relaxed">
-                    You'll see your brand's visibility score, competitor rankings, which prompts trigger your appearance, response quality analysis, and specific recommendations to improve your AI presence. The platform also tracks trends over time and alerts you to significant changes.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* FAQ 5 */}
-            <div className="bg-gray-50 rounded-[15px] overflow-hidden animate-fade-in-up animation-delay-800">
-              <button
-                onClick={() => toggleFaq(4)}
-                className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-gray-100 transition-colors"
-              >
-                <h3 className="text-lg font-semibold text-zinc-900">
-                  How many credits do I need?
-                </h3>
-                <svg
-                  className={`w-5 h-5 text-zinc-500 transition-transform ${openFaq === 4 ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              {openFaq === 4 && (
-                <div className="px-6 py-6">
-                  <p className="text-zinc-600 leading-relaxed">
-                    Each brand analysis uses 10 credits (1 credit for initial URL analysis, 9 credits for the full AI provider scan). The free tier includes 100 credits monthly, enough for 10 complete analyses. Pro plans include unlimited analyses for comprehensive monitoring.
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-24 bg-zinc-900">
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Start Monitoring Your AI Brand Visibility
-          </h2>
-          <p className="text-xl text-zinc-400 mb-8">
-            Take control of how AI models present your brand
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link
-              href="/brand-monitor"
-              className="btn-firecrawl-orange inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-base font-medium transition-all duration-200 h-12 px-8"
+            {/* AINET Stack Section */}
+            <div
+                className="pt-12 md:pt-20 lg:pt-[100px]"
+                style={{
+                    backgroundImage: 'url(/p0/bg0.svg)',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center'
+                }}
             >
-              Analyze Your Brand
-            </Link>
-            <Link
-              href="/plans"
-              className="inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-base font-medium transition-all duration-200 h-12 px-8 bg-zinc-800 text-white hover:bg-zinc-700"
-            >
-              View Pricing
-            </Link>
-          </div>
+                <section className="mb-6 md:mb-8">
+                    <div className="max-w-[1170px] mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="bg-white rounded-[24px] md:rounded-[40px] p-6 sm:p-8 md:p-12 lg:p-[52px_60px_72px]">
+                            {/* Stack Content */}
+                            <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+                                {/* Left Side */}
+                                <div className="w-full lg:max-w-[380px]">
+                                    <span className="text-black text-lg md:text-xl font-normal leading-[128%] tracking-[-1px] block">
+                                        [Full Stack Visibility & Analytics for AI Search]
+                                    </span>
+                                    <h2 className="text-black text-3xl md:text-4xl lg:text-[40px] font-normal leading-[128%] tracking-[-1px] my-4 md:my-6">
+                                        Visibility & Analytics from AI Search and the actions to drive growth
+                                    </h2>
+                                    <p className="text-[#A1A1A1] text-lg md:text-xl lg:text-2xl font-normal leading-[128%] tracking-[-1px] mb-8 md:mb-12 lg:mb-[70px]">
+                                        Capture millions of clicks from customers discovering new products and brands through ChatGPT
+                                    </p>
+                                </div>
+
+                                {/* Right Side - Feature Cards */}
+                                <div className="w-full lg:max-w-[496px] lg:ml-auto">
+                                    {/* Card 1 */}
+                                    <div className="rounded-[20px] md:rounded-[32px] border border-[#DFDEDC] mb-4 md:mb-6">
+                                        <div className="flex items-center gap-3 md:gap-5 p-4 md:p-6 border-b border-[#DFDEDC]">
+                                            <Image
+                                                src="/p0/token.svg"
+                                                alt="Cloud Icon"
+                                                width={32}
+                                                height={32}
+                                                className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0"
+                                            />
+                                            <h3 className="text-black text-xl md:text-2xl font-normal leading-[128%] tracking-[-1px]">
+                                                How AI actually decides
+                                            </h3>
+                                        </div>
+                                        <div className="p-4 md:p-6">
+                                            <p className="text-[#A1A1A1] text-base md:text-lg font-normal leading-[140%]">
+                                                AI answer engines don't crawl SEO pages or rank blue links. They form opinions by learning from real signals across the open web: community discussions, third-party mentions, structured and unstructured context, and consistency over time. The brands that dominate these signals become the default answers returned by AI.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Card 2 */}
+                                    <div className="rounded-[20px] md:rounded-[32px] border border-[#DFDEDC] mb-4 md:mb-6">
+                                        <div className="flex items-center gap-3 md:gap-5 p-4 md:p-6 border-b border-[#DFDEDC]">
+                                            <Image
+                                                src="/p0/manage-icon.svg"
+                                                alt="Protocol Icon"
+                                                width={32}
+                                                height={32}
+                                                className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0"
+                                            />
+                                            <h3 className="text-black text-xl md:text-2xl font-normal leading-[128%] tracking-[-1px]">
+                                                See how AI talks about you
+                                            </h3>
+                                        </div>
+                                        <div className="p-4 md:p-6">
+                                            <p className="text-[#A1A1A1] text-base md:text-lg font-normal leading-[140%]">
+                                                AINET GEO shows you how ChatGPT and other answer engines currently describe your brand, where those answers come from, and which sources most strongly influence AI opinions in your category. No guesswork, no assumptions: just clear visibility into how AI actually sees you.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    {/* Card 3 */}
+                                    <div className="rounded-[20px] md:rounded-[32px] border border-[#DFDEDC]">
+                                        <div className="flex items-center gap-3 md:gap-5 p-4 md:p-6 border-b border-[#DFDEDC]">
+                                            <Image
+                                                src="/p0/control-icon.svg"
+                                                alt="Contracts Icon"
+                                                width={32}
+                                                height={32}
+                                                className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0"
+                                            />
+                                            <h3 className="text-black text-xl md:text-2xl font-normal leading-[128%] tracking-[-1px]">
+                                                Shape the outcome
+                                            </h3>
+                                        </div>
+                                        <div className="p-4 md:p-6">
+                                            <p className="text-[#A1A1A1] text-base md:text-lg font-normal leading-[140%]">
+                                                Once the signals are visible, we help you strengthen the sources AI already trusts, create content aligned with how AI systems learn and cite information, and shift your brand from being merely mentioned to being actively recommended. This is Generative Engine Optimization.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
-      </section>
-    </div>
-  );
+    );
 }

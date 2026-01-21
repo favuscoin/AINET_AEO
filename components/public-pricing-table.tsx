@@ -96,21 +96,21 @@ export function PublicPricingTable() {
           </ul>
           <Link
             href="/register"
-            className="btn-firecrawl-outline w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
+            className="btn-ainet-outline w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
           >
             Start free
           </Link>
         </div>
 
         {/* Pro - Featured */}
-        <div className="bg-white p-8 rounded-[20px] border-2 border-orange-500 relative">
+        <div className="bg-white p-8 rounded-[20px] border-2 border-emerald-500 relative">
           <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-1 rounded-full text-sm font-medium">
             Most Popular
           </div>
           <h3 className="text-2xl font-bold mb-2">Pro</h3>
           <p className="text-zinc-600 mb-6">For growing businesses</p>
           <div className="mb-6">
-            <span className="text-4xl font-bold">$10</span>
+            <span className="text-4xl font-bold">$499</span>
             <span className="text-zinc-600">/month</span>
           </div>
           <ul className="space-y-3 mb-8">
@@ -135,7 +135,7 @@ export function PublicPricingTable() {
           </ul>
           <Link
             href="/register"
-            className="btn-firecrawl-orange w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
+            className="btn-ainet-mint w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
           >
             Start free trial
           </Link>
@@ -170,7 +170,7 @@ export function PublicPricingTable() {
           </ul>
           <Link
             href="/contact"
-            className="btn-firecrawl-outline w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
+            className="btn-ainet-outline w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
           >
             Contact sales
           </Link>
@@ -191,13 +191,12 @@ export function PublicPricingTable() {
         return (
           <div
             key={product.id}
-            className={`bg-white p-8 rounded-[20px] border ${
-              isRecommended ? 'border-2 border-orange-500 relative' : 'border-zinc-200'
-            }`}
+            className={`bg-white p-8 rounded-[20px] border ${isRecommended ? 'border-2 border-emerald-500 relative' : 'border-zinc-200'
+              }`}
           >
             {isRecommended && (
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-black text-white px-4 py-1 rounded-full text-sm font-medium">
-                {product.display.recommend_text}
+                {product.display?.recommend_text}
               </div>
             )}
             <h3 className="text-2xl font-bold mb-2">
@@ -226,9 +225,8 @@ export function PublicPricingTable() {
             </ul>
             <Link
               href="/register"
-              className={`${
-                isRecommended ? 'btn-firecrawl-orange' : 'btn-firecrawl-outline'
-              } w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4`}
+              className={`${isRecommended ? 'btn-ainet-mint' : 'btn-ainet-outline'
+                } w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4`}
             >
               {product.properties?.is_free ? 'Start free' : 'Get started'}
             </Link>

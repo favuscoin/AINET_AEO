@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -116,9 +117,63 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* AINET button styles */
+.btn-ainet-default {
+  background-color: #18181b;
+  color: white;
+  box-shadow: inset 0px -2px 0px 0px #18181b, 0px 1px 6px 0px rgba(24, 24, 27, 58%);
+}
+
+.btn-ainet-default:hover {
+  background-color: #27272a;
+  transform: translateY(1px) scale(0.98);
+  box-shadow: inset 0px -1px 0px 0px #18181b, 0px 1px 3px 0px rgba(24, 24, 27, 40%);
+}
+
+.btn-ainet-default:active {
+  transform: translateY(2px) scale(0.97);
+  box-shadow: inset 0px 1px 1px 0px #18181b, 0px 1px 2px 0px rgba(24, 24, 27, 30%);
+}
+
+.btn-ainet-mint {
+  background-color: #10B981;
+  color: white;
+  box-shadow: inset 0px -2px 0px 0px #059669, 0px 1px 6px 0px rgba(16, 185, 129, 58%);
+}
+
+.btn-ainet-mint:hover {
+  background-color: #059669;
+  transform: translateY(1px) scale(0.98);
+  box-shadow: inset 0px -1px 0px 0px #047857, 0px 1px 3px 0px rgba(16, 185, 129, 40%);
+}
+
+.btn-ainet-mint:active {
+  transform: translateY(2px) scale(0.97);
+  box-shadow: inset 0px 1px 1px 0px #047857, 0px 1px 2px 0px rgba(16, 185, 129, 30%);
+}
+
+.btn-ainet-outline {
+  background-color: transparent;
+  color: #18181b;
+  border: 1px solid #d4d4d8;
+  box-shadow: inset 0px -2px 0px 0px #e4e4e7, 0px 1px 6px 0px rgba(228, 228, 231, 58%);
+}
+
+.btn-ainet-outline:hover {
+  background-color: #fafafa;
+  transform: translateY(1px) scale(0.98);
+  box-shadow: inset 0px -1px 0px 0px #e4e4e7, 0px 1px 3px 0px rgba(228, 228, 231, 40%);
+}
+
+.btn-ainet-outline:active {
+  transform: translateY(2px) scale(0.97);
+  box-shadow: inset 0px 1px 1px 0px #e4e4e7, 0px 1px 2px 0px rgba(228, 228, 231, 30%);
 }
 
 /* Firecrawl button styles */
@@ -127,11 +182,13 @@
   color: white;
   box-shadow: inset 0px -2px 0px 0px #18181b, 0px 1px 6px 0px rgba(24, 24, 27, 58%);
 }
+
 .btn-firecrawl-default:hover {
   background-color: #27272a;
   transform: translateY(1px) scale(0.98);
   box-shadow: inset 0px -1px 0px 0px #18181b, 0px 1px 3px 0px rgba(24, 24, 27, 40%);
 }
+
 .btn-firecrawl-default:active {
   transform: translateY(2px) scale(0.97);
   box-shadow: inset 0px 1px 1px 0px #18181b, 0px 1px 2px 0px rgba(24, 24, 27, 30%);
@@ -142,11 +199,13 @@
   color: white;
   box-shadow: inset 0px -2px 0px 0px #c2410c, 0px 1px 6px 0px rgba(234, 88, 12, 58%);
 }
+
 .btn-firecrawl-orange:hover {
   background-color: #ea580c;
   transform: translateY(1px) scale(0.98);
   box-shadow: inset 0px -1px 0px 0px #c2410c, 0px 1px 3px 0px rgba(234, 88, 12, 40%);
 }
+
 .btn-firecrawl-orange:active {
   transform: translateY(2px) scale(0.97);
   box-shadow: inset 0px 1px 1px 0px #c2410c, 0px 1px 2px 0px rgba(234, 88, 12, 30%);
@@ -158,11 +217,13 @@
   border: 1px solid #d4d4d8;
   box-shadow: inset 0px -2px 0px 0px #e4e4e7, 0px 1px 6px 0px rgba(228, 228, 231, 58%);
 }
+
 .btn-firecrawl-outline:hover {
   background-color: #fafafa;
   transform: translateY(1px) scale(0.98);
   box-shadow: inset 0px -1px 0px 0px #e4e4e7, 0px 1px 3px 0px rgba(228, 228, 231, 40%);
 }
+
 .btn-firecrawl-outline:active {
   transform: translateY(2px) scale(0.97);
   box-shadow: inset 0px 1px 1px 0px #e4e4e7, 0px 1px 2px 0px rgba(228, 228, 231, 30%);
@@ -175,10 +236,13 @@
 
 /* Thermometer pulse animation */
 @keyframes thermometer-pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }
+
   50% {
     opacity: 0.8;
     transform: scale(1.05);
@@ -194,12 +258,15 @@
   0% {
     transform: translate(0px, 0px) scale(1);
   }
+
   33% {
     transform: translate(30px, -50px) scale(1.1);
   }
+
   66% {
     transform: translate(-20px, 20px) scale(0.9);
   }
+
   100% {
     transform: translate(0px, 0px) scale(1);
   }
@@ -218,6 +285,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -234,6 +302,7 @@
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -249,6 +318,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -284,6 +354,7 @@
     opacity: 0;
     transform: scale(0.9);
   }
+
   to {
     opacity: 1;
     transform: scale(1);
@@ -300,6 +371,7 @@
     opacity: 0;
     transform: translateX(-30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -316,6 +388,7 @@
     opacity: 0;
     transform: translateX(30px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -328,9 +401,12 @@
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
@@ -348,20 +424,20 @@
 }
 
 .autumn-pricing-table button[data-primary="true"] {
-  background-color: #f97316 !important;
+  background-color: #10B981 !important;
   color: white !important;
-  box-shadow: inset 0px -2px 0px 0px #c2410c, 0px 1px 6px 0px rgba(234, 88, 12, 58%) !important;
+  box-shadow: inset 0px -2px 0px 0px #059669, 0px 1px 6px 0px rgba(16, 185, 129, 58%) !important;
 }
 
 .autumn-pricing-table button[data-primary="true"]:hover {
-  background-color: #ea580c !important;
+  background-color: #059669 !important;
   transform: translateY(1px) scale(0.98) !important;
-  box-shadow: inset 0px -1px 0px 0px #c2410c, 0px 1px 3px 0px rgba(234, 88, 12, 40%) !important;
+  box-shadow: inset 0px -1px 0px 0px #047857, 0px 1px 3px 0px rgba(16, 185, 129, 40%) !important;
 }
 
 .autumn-pricing-table button[data-primary="true"]:active {
   transform: translateY(2px) scale(0.97) !important;
-  box-shadow: inset 0px 1px 1px 0px #c2410c, 0px 1px 2px 0px rgba(234, 88, 12, 30%) !important;
+  box-shadow: inset 0px 1px 1px 0px #047857, 0px 1px 2px 0px rgba(16, 185, 129, 30%) !important;
 }
 
 .autumn-pricing-table button:not([data-primary="true"]) {

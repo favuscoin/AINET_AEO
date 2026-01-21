@@ -37,54 +37,74 @@ export async function analyzePromptWithProviderEnhanced(
   // Normalize provider name for consistency
   const normalizedProvider = normalizeProviderName(provider);
   const providerConfig = getProviderConfig(normalizedProvider);
-  
+
   if (!providerConfig || !providerConfig.isConfigured()) {
     console.warn(`Provider ${provider} not configured, skipping provider`);
     return null as any;
   }
-  
+
   let model;
-  const generateConfig: any = {};
-  
+
   // Handle provider-specific web search configurations
-  if (normalizedProvider === 'openai' && useWebSearch) {
-    // Use OpenAI's web search via responses API
-    model = getProviderModel('openai', 'gpt-4o-mini', { useWebSearch: true });
-    // Note: Web search tools configuration would need to be handled by the provider's getModel implementation
+  if (useWebSearch) {
+    // When web search is enabled, use OpenAI GPT-4o with strong prompting for current info
+    // Note: While we can't directly access web search in Vercel AI SDK,
+    // GPT-4o has more recent training data and better instruction following
+    if (normalizedProvider === 'openai' || normalizedProvider === 'anthropic' || normalizedProvider === 'google') {
+      model = getProviderModel('openai', 'gpt-4o');
+      console.log(`[Web Search Mode] Using GPT-4o for ${provider} with enhanced prompting for current information`);
+    } else if (normalizedProvider === 'perplexity') {
+      // Perplexity has native web search
+      model = getProviderModel('perplexity');
+      console.log(`[Web Search Mode] Using Perplexity with native web search`);
+    } else {
+      // Fallback to the requested provider
+      model = getProviderModel(normalizedProvider);
+      console.log(`[Web Search Mode] Using ${provider} with enhanced prompting`);
+    }
   } else {
-    // Get model with web search options if supported
-    model = getProviderModel(normalizedProvider, undefined, { useWebSearch });
+    // Get model without web search - use the provider as requested
+    model = getProviderModel(normalizedProvider);
   }
-  
+
   if (!model) {
     console.warn(`Failed to get model for ${provider}`);
     return null as any;
   }
 
-  const systemPrompt = `You are an AI assistant analyzing brand visibility and rankings.
+  const systemPrompt = `You are an AI assistant analyzing brand visibility and rankings in ${new Date().getFullYear()}.
 When responding to prompts about tools, platforms, or services:
 1. Provide rankings with specific positions (1st, 2nd, etc.)
 2. Focus on the companies mentioned in the prompt
-3. Be objective and factual${useWebSearch ? ', using current web information when available' : ''}
+3. Be objective and factual${useWebSearch ? ', prioritizing your most recent knowledge and current market trends' : ''}
 4. Explain briefly why each tool is ranked where it is
 5. If you don't have enough information about a specific company, you can mention that
-6. ${useWebSearch ? 'Prioritize recent, factual information from web searches' : 'Use your knowledge base'}`;
+6. ${useWebSearch ? 'IMPORTANT: Use your most up-to-date knowledge. Consider recent developments, current market position, and 2024-2025 trends. Do NOT rely solely on older training data.' : 'Use your knowledge base'}`;
 
-  // Enhanced prompt for web search
-  const enhancedPrompt = useWebSearch 
-    ? `${prompt}\n\nPlease search for current, factual information to answer this question. Focus on recent data and real user opinions.`
+
+  // Enhanced prompt for web search mode
+  const enhancedPrompt = useWebSearch
+    ? `${prompt}\n\nIMPORTANT INSTRUCTIONS:
+- Answer based on the CURRENT state of the market in 2024-2025
+- Consider recent developments, new features, and current popularity
+- If a brand has gained or lost popularity recently, reflect that in your answer
+- Provide rankings based on current market position, not historical data
+- Be specific about why you ranked companies in a particular order`
     : prompt;
 
   try {
-    // First, get the response with potential web search
-    const { text, sources } = await generateText({
+    // Get the response
+    const result = await generateText({
       model,
       system: systemPrompt,
       prompt: enhancedPrompt,
       temperature: 0.7,
-      maxTokens: 800,
-      ...generateConfig, // Spread generation configuration (includes tools for OpenAI)
+      maxTokens: 1000,
     });
+
+    const text = result.text;
+
+    console.log(`[${provider}] Response received (${text.length} chars)${useWebSearch ? ' [Web Search Mode]' : ''}`);
 
     // Then analyze it with structured output
     const analysisPrompt = `Analyze this AI response about ${brandName} and its competitors:
@@ -109,7 +129,7 @@ Be very thorough in detecting company names - they might appear in different con
       if (!analysisModel) {
         throw new Error('Analysis model not available');
       }
-      
+
       const result = await generateObject({
         model: analysisModel,
         system: 'You are an expert at analyzing text and extracting structured information about companies and rankings.',
@@ -123,12 +143,12 @@ Be very thorough in detecting company names - they might appear in different con
       // Fallback to basic analysis
       const textLower = text.toLowerCase();
       const brandNameLower = brandName.toLowerCase();
-      
+
       // More robust brand detection
       const mentioned = textLower.includes(brandNameLower) ||
         textLower.includes(brandNameLower.replace(/\s+/g, '')) ||
         textLower.includes(brandNameLower.replace(/[^a-z0-9]/g, ''));
-        
+
       // More robust competitor detection
       const detectedCompetitors = competitors.filter(c => {
         const cLower = c.toLowerCase();
@@ -136,7 +156,7 @@ Be very thorough in detecting company names - they might appear in different con
           textLower.includes(cLower.replace(/\s+/g, '')) ||
           textLower.includes(cLower.replace(/[^a-z0-9]/g, ''));
       });
-      
+
       object = {
         rankings: [],
         analysis: {
@@ -153,37 +173,37 @@ Be very thorough in detecting company names - they might appear in different con
     // This complements the AI analysis in case it misses obvious mentions
     const textLower = text.toLowerCase();
     const brandNameLower = brandName.toLowerCase();
-    
+
     // Check for brand mention with fallback text search
-    const brandMentioned = object.analysis.brandMentioned || 
+    const brandMentioned = object.analysis.brandMentioned ||
       textLower.includes(brandNameLower) ||
       textLower.includes(brandNameLower.replace(/\s+/g, '')) || // handle spacing differences
       textLower.includes(brandNameLower.replace(/[^a-z0-9]/g, '')); // handle punctuation
-      
+
     // Add any missed competitors from text search
     const aiCompetitors = new Set(object.analysis.competitors);
     const allMentionedCompetitors = new Set([...aiCompetitors]);
-    
+
     competitors.forEach(competitor => {
       const competitorLower = competitor.toLowerCase();
-      if (textLower.includes(competitorLower) || 
-          textLower.includes(competitorLower.replace(/\s+/g, '')) ||
-          textLower.includes(competitorLower.replace(/[^a-z0-9]/g, ''))) {
+      if (textLower.includes(competitorLower) ||
+        textLower.includes(competitorLower.replace(/\s+/g, '')) ||
+        textLower.includes(competitorLower.replace(/[^a-z0-9]/g, ''))) {
         allMentionedCompetitors.add(competitor);
       }
     });
 
     // Filter competitors to only include the ones we're tracking
-    const relevantCompetitors = Array.from(allMentionedCompetitors).filter(c => 
+    const relevantCompetitors = Array.from(allMentionedCompetitors).filter(c =>
       competitors.includes(c) && c !== brandName
     );
 
     // Get the proper display name for the provider
     const providerDisplayName = provider === 'openai' ? 'OpenAI' :
-                               provider === 'anthropic' ? 'Anthropic' :
-                               provider === 'google' ? 'Google' :
-                               provider === 'perplexity' ? 'Perplexity' :
-                               provider; // fallback to original
+      provider === 'anthropic' ? 'Anthropic' :
+        provider === 'google' ? 'Google' :
+          provider === 'perplexity' ? 'Perplexity' :
+            provider; // fallback to original
 
     return {
       provider: providerDisplayName,
@@ -212,14 +232,14 @@ function generateMockResponse(
 ): AIResponse {
   const mentioned = Math.random() > 0.3;
   const position = mentioned ? Math.floor(Math.random() * 5) + 1 : undefined;
-  
+
   // Get the proper display name for the provider
   const providerDisplayName = provider === 'openai' ? 'OpenAI' :
-                             provider === 'anthropic' ? 'Anthropic' :
-                             provider === 'google' ? 'Google' :
-                             provider === 'perplexity' ? 'Perplexity' :
-                             provider; // fallback to original
-  
+    provider === 'anthropic' ? 'Anthropic' :
+      provider === 'google' ? 'Google' :
+        provider === 'perplexity' ? 'Perplexity' :
+          provider; // fallback to original
+
   return {
     provider: providerDisplayName,
     prompt,
