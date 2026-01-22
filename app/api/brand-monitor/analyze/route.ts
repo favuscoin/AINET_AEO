@@ -21,9 +21,9 @@ import {
   SSE_MAX_DURATION
 } from '@/config/constants';
 
-const autumn = process.env.AUTUMN_SECRET_KEY
-  ? new Autumn({ secretKey: process.env.AUTUMN_SECRET_KEY })
-  : null;
+const autumn = new Autumn({
+  secretKey: process.env.AUTUMN_SECRET_KEY || 'am_sk_test_123456789'
+});
 
 export const runtime = 'nodejs'; // Use Node.js runtime for streaming
 export const maxDuration = 300; // 5 minutes

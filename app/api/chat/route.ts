@@ -26,7 +26,7 @@ import { scrapeCompanyInfo } from '@/lib/scrape-utils';
 export const dynamic = 'force-dynamic';
 
 const autumn = new Autumn({
-  secretKey: process.env.AUTUMN_SECRET_KEY!,
+  secretKey: process.env.AUTUMN_SECRET_KEY || 'am_sk_test_123456789',
 });
 
 export async function POST(request: NextRequest) {
