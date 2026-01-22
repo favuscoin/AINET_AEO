@@ -4,9 +4,16 @@ import { Autumn } from 'autumn-js';
 import { AuthenticationError, ExternalServiceError, handleApiError } from '@/lib/api-errors';
 import { FEATURE_ID_MESSAGES } from '@/config/constants';
 
-const autumn = new Autumn({
-  secretKey: process.env.AUTUMN_SECRET_KEY || 'am_sk_test_123456789',
-});
+// Lazy initialization to avoid build-time execution
+let autumnClient: Autumn | null = null;
+const getAutumn = () => {
+  if (!autumnClient) {
+    autumnClient = new Autumn({
+      secretKey: process.env.AUTUMN_SECRET_KEY || 'am_sk_test_123456789'
+    });
+  }
+  return autumnClient;
+};
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,7 +27,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Check feature access for messages
-    const access = await autumn.check({
+    const access = await getAutumn().check({
       customer_id: sessionResponse.user.id,
       feature_id: FEATURE_ID_MESSAGES,
     });

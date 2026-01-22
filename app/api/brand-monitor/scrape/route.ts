@@ -14,9 +14,16 @@ import { FEATURE_ID_MESSAGES } from '@/config/constants';
 // Force dynamic rendering - don't pre-render during build
 export const dynamic = 'force-dynamic';
 
-const autumn = new Autumn({
-  secretKey: process.env.AUTUMN_SECRET_KEY || 'am_sk_test_123456789'
-});
+// Lazy initialization to avoid build-time execution
+let autumnClient: Autumn | null = null;
+const getAutumn = () => {
+  if (!autumnClient) {
+    autumnClient = new Autumn({
+      secretKey: process.env.AUTUMN_SECRET_KEY || 'am_sk_test_123456789'
+    });
+  }
+  return autumnClient;
+};
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,9 +37,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user has enough credits (1 credit for URL scraping)
-    if (process.env.NODE_ENV !== 'development' && autumn) {
+    if (process.env.NODE_ENV !== 'development') {
       try {
-        const access = await autumn.check({
+        const access = await getAutumn().check({
           customer_id: sessionResponse.user.id,
           feature_id: FEATURE_ID_MESSAGES,
         });
@@ -70,9 +77,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Track usage (1 credit for scraping)
-    if (process.env.NODE_ENV !== 'development' && autumn) {
+    if (process.env.NODE_ENV !== 'development') {
       try {
-        await autumn.track({
+        await getAutumn().track({
           customer_id: sessionResponse.user.id,
           feature_id: FEATURE_ID_MESSAGES,
           value: 1,

@@ -21,9 +21,16 @@ import {
   SSE_MAX_DURATION
 } from '@/config/constants';
 
-const autumn = new Autumn({
-  secretKey: process.env.AUTUMN_SECRET_KEY || 'am_sk_test_123456789'
-});
+// Lazy initialization to avoid build-time execution
+let autumnClient: Autumn | null = null;
+const getAutumn = () => {
+  if (!autumnClient) {
+    autumnClient = new Autumn({
+      secretKey: process.env.AUTUMN_SECRET_KEY || 'am_sk_test_123456789'
+    });
+  }
+  return autumnClient;
+};
 
 export const runtime = 'nodejs'; // Use Node.js runtime for streaming
 export const maxDuration = 300; // 5 minutes
@@ -40,10 +47,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user has enough credits (10 credits per analysis)
-    if (process.env.NODE_ENV !== 'development' && autumn) {
+    if (process.env.NODE_ENV !== 'development') {
       try {
         console.log('[Brand Monitor] Checking access - Customer ID:', sessionResponse.user.id);
-        const access = await autumn.check({
+        const access = await getAutumn().check({
           customer_id: sessionResponse.user.id,
           feature_id: FEATURE_ID_MESSAGES,
         });
@@ -74,10 +81,10 @@ export async function POST(request: NextRequest) {
     }
 
     // Track usage (10 credits)
-    if (process.env.NODE_ENV !== 'development' && autumn) {
+    if (process.env.NODE_ENV !== 'development') {
       try {
         console.log('[Brand Monitor] Recording usage - Customer ID:', sessionResponse.user.id);
-        await autumn.track({
+        await getAutumn().track({
           customer_id: sessionResponse.user.id,
           feature_id: FEATURE_ID_MESSAGES,
           value: CREDITS_PER_BRAND_ANALYSIS,
@@ -93,9 +100,9 @@ export async function POST(request: NextRequest) {
 
     // Get remaining credits after deduction
     let remainingCredits = 0;
-    if (autumn) {
+    if (process.env.NODE_ENV === 'production') {
       try {
-        const usage = await autumn.check({
+        const usage = await getAutumn().check({
           customer_id: sessionResponse.user.id,
           feature_id: FEATURE_ID_MESSAGES,
         });
