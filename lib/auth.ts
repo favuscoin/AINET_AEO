@@ -7,8 +7,8 @@ export const auth = betterAuth({
   database: new Pool({
     connectionString: process.env.DATABASE_URL!,
   }),
-  secret: process.env.BETTER_AUTH_SECRET!,
-  baseURL: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  secret: process.env.BETTER_AUTH_SECRET || 't7OrUUrBxD0691py/NpxmzpBK+ev6DnQciy+GPPC9oM=',
+  baseURL: process.env.NEXT_PUBLIC_APP_URL || (process.env.NODE_ENV === 'production' ? 'https://ainet-aeo.vercel.app' : 'http://localhost:3000'),
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false, // Set to true to require email verification
@@ -40,7 +40,10 @@ export const auth = betterAuth({
       });
     },
   },
-  trustedOrigins: [process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'],
+  trustedOrigins: [
+    process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+    'https://ainet-aeo.vercel.app'
+  ],
   session: {
     expiresIn: 60 * 60 * 24 * 7, // 7 days
     updateAge: 60 * 60 * 24, // Update session if older than 1 day
