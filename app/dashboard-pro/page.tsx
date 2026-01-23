@@ -2585,7 +2585,7 @@ export default function DashboardProPage() {
         }
     }, [router]);
 
-    if (isPending || !session) {
+    if (isChecking || !isAuthorized) {
         return (
             <div className="min-h-screen bg-gray-50 flex items-center justify-center">
                 <div className="text-center">
