@@ -82,5 +82,6 @@ export const auth = betterAuth({
       });
     },
   },
-  plugins: [autumn()],
+  // Temporarily disabled - causing 500 errors during registration
+  // plugins: [autumn()],
 });
