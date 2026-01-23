@@ -2569,14 +2569,21 @@ function DashboardProContent({ session }: { session: any }) {
 }
 
 export default function DashboardProPage() {
-    const { data: session, isPending } = useSession();
     const router = useRouter();
+    const [isAuthorized, setIsAuthorized] = useState(false);
+    const [isChecking, setIsChecking] = useState(true);
 
     useEffect(() => {
-        if (!isPending && !session) {
+        // Check invite code
+        const inviteCode = localStorage.getItem('ainet_invite_code');
+
+        if (inviteCode === 'INTERNETOFAGENTS') {
+            setIsAuthorized(true);
+            setIsChecking(false);
+        } else {
             router.push('/login');
         }
-    }, [session, isPending, router]);
+    }, [router]);
 
     if (isPending || !session) {
         return (
