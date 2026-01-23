@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useCustomer, usePricingTable } from 'autumn-js/react';
-import { useSession } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import {
