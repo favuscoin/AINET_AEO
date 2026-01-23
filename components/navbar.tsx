@@ -16,6 +16,9 @@ export function Navbar() {
   // Use AIInternet light theme for homepage, p0 and dashboard-pro pages
   const isLightTheme = pathname === '/' || pathname === '/p0' || pathname === '/dashboard-pro';
 
+  // Hide navigation menu items on auth pages
+  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/forgot-password' || pathname === '/reset-password';
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
@@ -110,43 +113,45 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* Center navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link
-              href="/og"
-              className="text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
-            >
-              OG
-            </Link>
-            <Link
-              href="/p0"
-              className="text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
-            >
-              p0
-            </Link>
-            <Link
-              href="/ainet-pro"
-              className="text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
-            >
-              AINET PRO
-            </Link>
-            <Link
-              href="/ainet-prompt-mining"
-              className="text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
-            >
-              AINET PROMPT MINING
-            </Link>
-            {session && (
-              <>
-                <Link
-                  href="/dashboard-pro"
-                  className="text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
-                >
-                  Dashboard PRO
-                </Link>
-              </>
-            )}
-          </div>
+          {/* Center navigation - hidden on auth pages */}
+          {!isAuthPage && (
+            <div className="hidden md:flex items-center space-x-8">
+              <Link
+                href="/og"
+                className="text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
+              >
+                OG
+              </Link>
+              <Link
+                href="/p0"
+                className="text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
+              >
+                p0
+              </Link>
+              <Link
+                href="/ainet-pro"
+                className="text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
+              >
+                AINET PRO
+              </Link>
+              <Link
+                href="/ainet-prompt-mining"
+                className="text-sm font-medium text-zinc-300 hover:text-emerald-400 transition-colors"
+              >
+                AINET PROMPT MINING
+              </Link>
+              {session && (
+                <>
+                  <Link
+                    href="/dashboard-pro"
+                    className="text-sm font-medium text-emerald-400 hover:text-emerald-300 transition-colors"
+                  >
+                    Dashboard PRO
+                  </Link>
+                </>
+              )}
+            </div>
+          )}
 
           {/* Right side - Auth buttons */}
           <div className="flex items-center space-x-4">
