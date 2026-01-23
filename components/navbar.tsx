@@ -65,7 +65,7 @@ export function Navbar() {
                   <>
                     <Link
                       href="/login"
-                      className="inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-9 px-4 bg-white/5 text-white hover:bg-white/10 border border-white/10"
+                      className="btn-ainet-default inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-9 px-4"
                     >
                       Sign In
                     </Link>
