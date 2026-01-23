@@ -14,10 +14,10 @@ export function Navbar() {
   const pathname = usePathname();
 
   // Use AIInternet light theme for homepage, p0 and dashboard-pro pages
-  const isLightTheme = pathname === '/' || pathname === '/p0' || pathname === '/dashboard-pro' || pathname === '/login' || pathname === '/register' || pathname === '/forgot-password' || pathname === '/reset-password';
+  const isLightTheme = pathname === '/' || pathname === '/p0' || pathname === '/dashboard-pro' || pathname === '/login' || pathname === '/login' || pathname === '/forgot-password' || pathname === '/reset-password';
 
   // Hide navigation menu items on auth pages
-  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/forgot-password' || pathname === '/reset-password';
+  const isAuthPage = pathname === '/login' || pathname === '/login' || pathname === '/forgot-password' || pathname === '/reset-password';
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -178,7 +178,7 @@ export function Navbar() {
                   Sign In
                 </Link>
                 <Link
-                  href="/register"
+                  href="/login"
                   className="btn-ainet-mint inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-9 px-4"
                 >
                   Get Started

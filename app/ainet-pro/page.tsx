@@ -28,7 +28,7 @@ export default function AINETPROPage() {
                         {/* CTAs */}
                         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                             <Link
-                                href="/register"
+                                href="/login"
                                 className="px-8 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-lg transition-colors shadow-lg shadow-emerald-500/25"
                             >
                                 Sign Up Now

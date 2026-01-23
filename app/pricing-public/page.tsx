@@ -59,7 +59,7 @@ export default function PublicPricingPage() {
       router.push(`/pricing#${productId}`);
     } else {
       // If not logged in, go to register
-      router.push('/register');
+      router.push('/login');
     }
   };
 

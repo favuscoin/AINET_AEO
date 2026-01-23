@@ -160,7 +160,7 @@ export default function PricingTable({
                   } else {
                     // Mock behavior for dev
                     console.log('[DEV] Mock redirect to register for:', product.id);
-                    window.location.href = '/register';
+                    window.location.href = '/login';
                   }
                 },
               }}

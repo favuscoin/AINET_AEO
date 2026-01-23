@@ -95,7 +95,7 @@ export function PublicPricingTable() {
             </li>
           </ul>
           <Link
-            href="/register"
+            href="/login"
             className="btn-ainet-outline w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
           >
             Start free
@@ -134,7 +134,7 @@ export function PublicPricingTable() {
             </li>
           </ul>
           <Link
-            href="/register"
+            href="/login"
             className="btn-ainet-mint w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4"
           >
             Start free trial
@@ -224,7 +224,7 @@ export function PublicPricingTable() {
               ))}
             </ul>
             <Link
-              href="/register"
+              href="/login"
               className={`${isRecommended ? 'btn-ainet-mint' : 'btn-ainet-outline'
                 } w-full inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-10 px-4`}
             >
