@@ -14,7 +14,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   // Use AIInternet light theme for homepage, p0 and dashboard-pro pages
-  const isLightTheme = pathname === '/' || pathname === '/p0' || pathname === '/dashboard-pro';
+  const isLightTheme = pathname === '/' || pathname === '/p0' || pathname === '/dashboard-pro' || pathname === '/login' || pathname === '/register' || pathname === '/forgot-password' || pathname === '/reset-password';
 
   // Hide navigation menu items on auth pages
   const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/forgot-password' || pathname === '/reset-password';
