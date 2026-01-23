@@ -60,23 +60,7 @@ export function Navbar() {
 
               {/* Right side */}
               <div className="flex items-center gap-4">
-                {isAuthPage ? (
-                  // Auth buttons styled like hero section
-                  <>
-                    <Link
-                      href="/login"
-                      className="btn-ainet-default inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-9 px-4"
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      href="/register"
-                      className="btn-ainet-mint inline-flex items-center justify-center whitespace-nowrap rounded-[10px] text-sm font-medium transition-all duration-200 h-9 px-4"
-                    >
-                      Get Started
-                    </Link>
-                  </>
-                ) : (
+                {!isAuthPage && (
                   <Link
                     href="#"
                     className="bg-white text-[#1E1B30] px-6 py-2.5 rounded-[110px] text-xs font-medium uppercase tracking-wider hover:bg-[#1E1B30] hover:text-white transition-all"

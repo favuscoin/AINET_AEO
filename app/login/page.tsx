@@ -22,8 +22,8 @@ function LoginForm() {
       return;
     }
 
-    // Redirect to register page with invite code
-    window.location.href = `/register?code=${encodeURIComponent(inviteCode)}`;
+    // Redirect to dashboard
+    window.location.href = '/dashboard';
   };
 
   return (
@@ -32,10 +32,30 @@ function LoginForm() {
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-emerald-300 via-emerald-400 to-emerald-500 p-12 items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-300/90 via-emerald-400/90 to-emerald-500/90" />
         <div className="relative z-10 max-w-md text-white">
-          <h1 className="text-4xl font-bold mb-4">Get AINET Early Access</h1>
+          <h1 className="text-4xl font-bold mb-4">Join thousands of developers</h1>
           <p className="text-lg opacity-90">
-            Enter your invite code to join the future of AI-powered brand monitoring and analytics.
+            Start building with our powerful API and unlock new possibilities for your applications.
           </p>
+          <div className="mt-8 space-y-4">
+            <div className="flex items-center space-x-3">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Unlimited API access</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Real-time collaboration</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span>24/7 support</span>
+            </div>
+          </div>
         </div>
         {/* Decorative elements */}
         <div className="absolute top-20 right-20 w-64 h-64 bg-emerald-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-blob" />
