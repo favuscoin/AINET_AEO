@@ -13,6 +13,7 @@ import { FEATURE_ID_MESSAGES } from '@/config/constants';
 
 // Force dynamic rendering - don't pre-render during build
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 // Lazy initialization to avoid build-time execution
 let autumnClient: Autumn | null = null;

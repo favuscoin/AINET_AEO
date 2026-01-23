@@ -4,6 +4,9 @@ import { Autumn } from 'autumn-js';
 import { AuthenticationError, ExternalServiceError, handleApiError } from '@/lib/api-errors';
 import { FEATURE_ID_MESSAGES } from '@/config/constants';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 // Lazy initialization to avoid build-time execution
 let autumnClient: Autumn | null = null;
 const getAutumn = () => {
