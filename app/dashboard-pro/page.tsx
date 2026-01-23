@@ -2596,5 +2596,14 @@ export default function DashboardProPage() {
         );
     }
 
-    return <DashboardProContent session={session} />;
+    // Create a mock session object for components that expect it
+    const mockSession = {
+        user: {
+            id: 'invite-user',
+            email: 'invite@ainet.com',
+            name: 'AINET User'
+        }
+    };
+
+    return <DashboardProContent session={mockSession} />;
 }
