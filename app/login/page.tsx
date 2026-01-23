@@ -1,10 +1,8 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Link from 'next/link';
 import Image from 'next/image';
-import { signIn } from '@/lib/auth-client';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
