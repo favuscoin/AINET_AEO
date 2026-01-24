@@ -259,9 +259,9 @@ function DashboardProContent({ session }: { session: any }) {
     return (
         <div className="flex h-screen bg-gray-50 pt-16">
             {/* Left Sidebar */}
-            <div className="w-64 bg-white border-r flex flex-col">
+            <div className="w-64 bg-white flex flex-col">
                 {/* Logo/Branding Area */}
-                <div className="p-4 border-b">
+                <div className="p-4 border-b border-r">
                     {/* Empty space for logo or branding */}
                 </div>
 
