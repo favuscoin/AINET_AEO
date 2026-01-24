@@ -2303,10 +2303,100 @@ function DashboardProContent({ session }: { session: any }) {
                                 {/* Available Plans */}
                                 <div className="bg-white rounded-lg border p-6">
                                     <h2 className="text-lg font-semibold mb-4">Available Plans</h2>
-                                    <div className="text-center py-8">
-                                        <p className="text-gray-600">You have Early Access via invite code.</p>
-                                        <p className="text-sm text-gray-500 mt-2">Billing features will be available soon.</p>
+                                    <div className="mb-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
+                                        <p className="text-emerald-800 text-sm font-medium">✓ You have Early Access via invite code</p>
                                     </div>
+
+                                    <div className="grid md:grid-cols-3 gap-4">
+                                        {/* Free Plan */}
+                                        <div className="border rounded-lg p-4 hover:border-gray-300 transition-colors">
+                                            <div className="mb-3">
+                                                <h3 className="font-semibold text-lg">Free</h3>
+                                                <p className="text-2xl font-bold mt-1">$0<span className="text-sm text-gray-500 font-normal">/month</span></p>
+                                            </div>
+                                            <ul className="space-y-2 text-sm">
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>100 AI searches/month</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Basic brand monitoring</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Weekly reports</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        {/* Pro Plan */}
+                                        <div className="border-2 border-emerald-500 rounded-lg p-4 relative">
+                                            <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                                                <span className="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">POPULAR</span>
+                                            </div>
+                                            <div className="mb-3">
+                                                <h3 className="font-semibold text-lg">Pro</h3>
+                                                <p className="text-2xl font-bold mt-1">$49<span className="text-sm text-gray-500 font-normal">/month</span></p>
+                                            </div>
+                                            <ul className="space-y-2 text-sm">
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>1,000 AI searches/month</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Advanced analytics</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Daily reports</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Competitor tracking</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Priority support</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        {/* Enterprise Plan */}
+                                        <div className="border rounded-lg p-4 hover:border-gray-300 transition-colors">
+                                            <div className="mb-3">
+                                                <h3 className="font-semibold text-lg">Enterprise</h3>
+                                                <p className="text-2xl font-bold mt-1">$199<span className="text-sm text-gray-500 font-normal">/month</span></p>
+                                            </div>
+                                            <ul className="space-y-2 text-sm">
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Unlimited AI searches</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Custom integrations</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Real-time monitoring</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>API access</span>
+                                                </li>
+                                                <li className="flex items-start">
+                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
+                                                    <span>Dedicated account manager</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-center text-sm text-gray-500 mt-6">
+                                        Billing will be enabled soon. Early access users will receive special pricing.
+                                    </p>
                                 </div>
                             </div>
                         )
