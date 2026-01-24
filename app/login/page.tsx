@@ -71,8 +71,8 @@ function LoginForm() {
           <div>
             <div className="lg:hidden mb-8 flex justify-center">
               <Image
-                src="/airternet-logo.png"
-                alt="AIrternet"
+                src="/Union1.png"
+                alt="AIInternet"
                 width={90}
                 height={18}
                 priority
