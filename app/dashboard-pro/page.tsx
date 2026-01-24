@@ -2300,7 +2300,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     )}
                                 </div>
 
-                                {/* Available Plans */}
+                                {/* Pricing moved to Pricing tab */}
                                 <div className="bg-white rounded-lg border p-6">
                                     <div className="mb-6">
                                         <h2 className="text-3xl font-bold mb-2">Simple Pricing Plans</h2>
