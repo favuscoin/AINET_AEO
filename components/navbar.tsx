@@ -45,7 +45,7 @@ export function Navbar() {
               {/* Logo */}
               <Link href="/" className="flex items-center">
                 <Image
-                  src={pathname === '/login' ? '/Union2.png' : '/Union1.png'}
+                  src={pathname === '/login' ? '/Union2.png?v=2' : '/Union1.png?v=2'}
                   alt="AIInternet"
                   width={120}
                   height={30}
