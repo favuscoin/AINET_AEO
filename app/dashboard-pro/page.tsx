@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { useCustomer, usePricingTable } from 'autumn-js/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import {
@@ -134,8 +133,7 @@ const negativePrompts = [
 // Separate component that uses Autumn hooks
 function DashboardProContent({ session }: { session: any }) {
     const router = useRouter();
-    const { customer, attach } = useCustomer();
-    const { products } = usePricingTable();
+    // Removed Autumn hooks for invite-only access
     const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
     const [activeSection, setActiveSection] = useState('agent');
 
@@ -203,28 +201,15 @@ function DashboardProContent({ session }: { session: any }) {
         await updateSettings.mutateAsync({ [key]: value });
     };
 
-    // Get current user's products and features
-    const userProducts = customer?.products || [];
-    const userFeatures = customer?.features || {};
-
-    // Find the actual active product (not scheduled)
-    const activeProduct = userProducts.find(p =>
-        p.status === 'active' || p.status === 'trialing' || p.status === 'past_due'
-    );
-    const scheduledProduct = userProducts.find(p =>
-        p.status === 'scheduled' || (p.started_at && new Date(p.started_at) > new Date())
-    );
+    // Mock data for invite-only access (no Autumn)
+    const userProducts: any[] = [];
+    const userFeatures: any = {};
+    const activeProduct = null;
+    const scheduledProduct = null;
 
     const handleUpgrade = async (productId: string) => {
-        try {
-            setLoadingProductId(productId);
-            await attach({
-                productId,
-                dialog: ProductChangeDialog,
-            });
-        } finally {
-            setLoadingProductId(null);
-        }
+        // Disabled for invite-only access
+        console.log('Upgrade feature disabled in invite-only mode');
     };
 
     const handleSendMessage = async () => {
