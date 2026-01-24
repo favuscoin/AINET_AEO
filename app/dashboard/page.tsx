@@ -1,7 +1,6 @@
 'use client';
 
 import { useCustomer, usePricingTable } from 'autumn-js/react';
-import { useSession } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Lock, CheckCircle, AlertCircle, Loader2, User, Mail, Phone, Edit2, Save, X } from 'lucide-react';
@@ -14,13 +13,13 @@ function DashboardContent({ session }: { session: any }) {
   const { customer, attach } = useCustomer();
   const { products } = usePricingTable();
   const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
-  
+
   // Profile and settings hooks
   const { data: profileData } = useProfile();
   const updateProfile = useUpdateProfile();
   const { data: settings } = useSettings();
   const updateSettings = useUpdateSettings();
-  
+
   // Profile edit state
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [profileForm, setProfileForm] = useState({
@@ -62,12 +61,12 @@ function DashboardContent({ session }: { session: any }) {
   // Get current user's products and features
   const userProducts = customer?.products || [];
   const userFeatures = customer?.features || {};
-  
+
   // Find the actual active product (not scheduled)
-  const activeProduct = userProducts.find(p => 
+  const activeProduct = userProducts.find(p =>
     p.status === 'active' || p.status === 'trialing' || p.status === 'past_due'
   );
-  const scheduledProduct = userProducts.find(p => 
+  const scheduledProduct = userProducts.find(p =>
     p.status === 'scheduled' || (p.started_at && new Date(p.started_at) > new Date())
   );
 
@@ -127,7 +126,7 @@ function DashboardContent({ session }: { session: any }) {
               </div>
             )}
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -136,7 +135,7 @@ function DashboardContent({ session }: { session: any }) {
               </label>
               <p className="text-gray-900">{session.user?.email}</p>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 <User className="inline-block h-4 w-4 mr-1" />
@@ -156,7 +155,7 @@ function DashboardContent({ session }: { session: any }) {
                 </p>
               )}
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 <Phone className="inline-block h-4 w-4 mr-1" />
@@ -176,7 +175,7 @@ function DashboardContent({ session }: { session: any }) {
                 </p>
               )}
             </div>
-            
+
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Bio
@@ -209,19 +208,17 @@ function DashboardContent({ session }: { session: any }) {
               </div>
               <button
                 onClick={() => handleSettingToggle('emailNotifications', !settings?.emailNotifications)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  settings?.emailNotifications ? 'bg-emerald-500' : 'bg-gray-200'
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings?.emailNotifications ? 'bg-emerald-500' : 'bg-gray-200'
+                  }`}
                 disabled={updateSettings.isPending}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    settings?.emailNotifications ? 'translate-x-6' : 'translate-x-1'
-                  }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings?.emailNotifications ? 'translate-x-6' : 'translate-x-1'
+                    }`}
                 />
               </button>
             </div>
-            
+
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">Marketing Emails</p>
@@ -229,15 +226,13 @@ function DashboardContent({ session }: { session: any }) {
               </div>
               <button
                 onClick={() => handleSettingToggle('marketingEmails', !settings?.marketingEmails)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  settings?.marketingEmails ? 'bg-emerald-500' : 'bg-gray-200'
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${settings?.marketingEmails ? 'bg-emerald-500' : 'bg-gray-200'
+                  }`}
                 disabled={updateSettings.isPending}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    settings?.marketingEmails ? 'translate-x-6' : 'translate-x-1'
-                  }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${settings?.marketingEmails ? 'translate-x-6' : 'translate-x-1'
+                    }`}
                 />
               </button>
             </div>
@@ -324,7 +319,7 @@ function DashboardContent({ session }: { session: any }) {
                 const isCurrentPlan = activeProduct?.id === product.id;
                 const isScheduledPlan = scheduledProduct?.id === product.id;
                 const features = product.properties?.is_free ? product.items : product.items?.slice(1) || [];
-                
+
                 return (
                   <div key={product.id} className="border rounded-lg p-4">
                     <div className="flex justify-between items-start">
@@ -357,8 +352,8 @@ function DashboardContent({ session }: { session: any }) {
                         </ul>
                       </div>
                       {!isCurrentPlan && !isScheduledPlan && (
-                        <Button 
-                          onClick={() => handleUpgrade(product.id)} 
+                        <Button
+                          onClick={() => handleUpgrade(product.id)}
                           size="sm"
                           variant="outline"
                           disabled={loadingProductId !== null}
@@ -391,16 +386,23 @@ function DashboardContent({ session }: { session: any }) {
 }
 
 export default function DashboardPage() {
-  const { data: session, isPending } = useSession();
   const router = useRouter();
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    if (!isPending && !session) {
+    // Check invite code
+    const inviteCode = localStorage.getItem('ainet_invite_code');
+
+    if (inviteCode === 'INTERNETOFAGENTS') {
+      setIsAuthorized(true);
+      setIsChecking(false);
+    } else {
       router.push('/login');
     }
-  }, [session, isPending, router]);
+  }, [router]);
 
-  if (isPending || !session) {
+  if (isChecking || !isAuthorized) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -411,6 +413,14 @@ export default function DashboardPage() {
     );
   }
 
-  // Only render DashboardContent when we have a session and AutumnProvider is available
-  return <DashboardContent session={session} />;
+  // Create a mock session object for components that expect it
+  const mockSession = {
+    user: {
+      id: 'invite-user',
+      email: 'invite@ainet.com',
+      name: 'AINET User'
+    }
+  };
+
+  return <DashboardContent session={mockSession} />;
 }

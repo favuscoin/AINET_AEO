@@ -25,8 +25,8 @@ function LoginForm() {
     // Save invite code to localStorage
     localStorage.setItem('ainet_invite_code', inviteCode);
 
-    // Redirect to homepage (dashboard-pro requires full auth setup)
-    window.location.href = '/';
+    // Redirect to dashboard
+    window.location.href = '/dashboard';
   };
 
   return (
