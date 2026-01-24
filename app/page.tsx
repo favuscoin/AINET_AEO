@@ -47,7 +47,7 @@ export default function P0Page() {
                             </h1>
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-5">
                                 <Link
-                                    href="/dashboard-pro"
+                                    href="/login"
                                     className="w-full sm:w-auto bg-[#AEEBD1] text-[#1E1B30] px-6 md:px-8 py-4 md:py-5 rounded-[110px] text-xs font-medium uppercase tracking-wider hover:bg-[#1E1B30] hover:text-white transition-all text-center"
                                 >
                                     get early access
