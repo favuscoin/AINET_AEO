@@ -41,12 +41,12 @@ import {
     Users
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import ProductChangeDialog from '@/components/autumn/product-change-dialog';
+// import ProductChangeDialog from '@/components/autumn/product-change-dialog';
 import { useProfile, useUpdateProfile, useSettings, useUpdateSettings } from '@/hooks/useProfile';
 import { useConversations, useConversation } from '@/hooks/useConversations';
 import { useSendMessage } from '@/hooks/useMessages';
 import { format } from 'date-fns';
-import PricingTable from '@/components/autumn/pricing-table';
+// import PricingTable from '@/components/autumn/pricing-table';
 import { BrandMonitor } from '@/components/brand-monitor/brand-monitor';
 import { useBrandAnalyses, useBrandAnalysis, useDeleteBrandAnalysis } from '@/hooks/useBrandAnalyses';
 import { Plus, Trash2 } from 'lucide-react';
@@ -2303,76 +2303,10 @@ function DashboardProContent({ session }: { session: any }) {
                                 {/* Available Plans */}
                                 <div className="bg-white rounded-lg border p-6">
                                     <h2 className="text-lg font-semibold mb-4">Available Plans</h2>
-                                    {!products ? (
-                                        <div className="flex justify-center py-8">
-                                            <Loader2 className="h-6 w-6 animate-spin text-gray-400" />
-                                        </div>
-                                    ) : (
-                                        <div className="space-y-4">
-                                            {products.map((product) => {
-                                                const isCurrentPlan = activeProduct?.id === product.id;
-                                                const isScheduledPlan = scheduledProduct?.id === product.id;
-                                                const features = product.properties?.is_free ? product.items : product.items?.slice(1) || [];
-
-                                                return (
-                                                    <div key={product.id} className="border rounded-lg p-4">
-                                                        <div className="flex justify-between items-start">
-                                                            <div className="flex-1">
-                                                                <h3 className="font-medium text-lg">
-                                                                    {product.display?.name || product.name}
-                                                                    {isCurrentPlan && (
-                                                                        <span className="ml-2 text-sm text-green-600">(Current Plan)</span>
-                                                                    )}
-                                                                    {isScheduledPlan && (
-                                                                        <span className="ml-2 text-sm text-emerald-600">(Scheduled)</span>
-                                                                    )}
-                                                                </h3>
-                                                                {product.display?.description && (
-                                                                    <p className="text-sm text-gray-600 mt-1">{product.display.description}</p>
-                                                                )}
-                                                                <ul className="mt-3 space-y-1">
-                                                                    {features.slice(0, 3).map((item, index) => (
-                                                                        <li key={index} className="flex items-start text-sm">
-                                                                            {isCurrentPlan ? (
-                                                                                <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                                            ) : (
-                                                                                <Lock className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0 mt-0.5" />
-                                                                            )}
-                                                                            <span className={!isCurrentPlan ? 'text-gray-500' : ''}>
-                                                                                {item.display?.primary_text}
-                                                                            </span>
-                                                                        </li>
-                                                                    ))}
-                                                                </ul>
-                                                            </div>
-                                                            {!isCurrentPlan && !isScheduledPlan && (
-                                                                <Button
-                                                                    onClick={() => handleUpgrade(product.id)}
-                                                                    size="sm"
-                                                                    variant="outline"
-                                                                    disabled={loadingProductId !== null}
-                                                                >
-                                                                    {loadingProductId === product.id ? (
-                                                                        <>
-                                                                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                                                            Loading...
-                                                                        </>
-                                                                    ) : (
-                                                                        product.properties?.is_free ? 'Downgrade' : 'Upgrade'
-                                                                    )}
-                                                                </Button>
-                                                            )}
-                                                            {isScheduledPlan && (
-                                                                <span className="text-sm text-gray-500">
-                                                                    Starts {new Date(scheduledProduct.started_at || scheduledProduct.current_period_end || Date.now()).toLocaleDateString()}
-                                                                </span>
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    )}
+                                    <div className="text-center py-8">
+                                        <p className="text-gray-600">You have Early Access via invite code.</p>
+                                        <p className="text-sm text-gray-500 mt-2">Billing features will be available soon.</p>
+                                    </div>
                                 </div>
                             </div>
                         )
@@ -2456,7 +2390,7 @@ function DashboardProContent({ session }: { session: any }) {
                                 {/* Brand Monitor Component */}
                                 <div className="mb-6">
                                     <BrandMonitor
-                                        creditsAvailable={customer?.features?.messages?.balance || 0}
+                                        creditsAvailable={0}
                                         onCreditsUpdate={async () => {
                                             // Refresh customer data
                                         }}
@@ -2514,7 +2448,11 @@ function DashboardProContent({ session }: { session: any }) {
                                 </div>
 
                                 <div className="bg-white rounded-lg border p-8">
-                                    <PricingTable />
+                                    {/* <PricingTable /> */}
+                                    <div className="text-center py-12">
+                                        <p className="text-gray-600 text-lg">You have Early Access via invite code.</p>
+                                        <p className="text-sm text-gray-500 mt-2">Pricing features will be available soon.</p>
+                                    </div>
                                 </div>
                             </div>
                         )
