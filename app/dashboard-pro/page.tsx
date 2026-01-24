@@ -2359,32 +2359,17 @@ function DashboardProContent({ session }: { session: any }) {
                                         </div>
 
                                         {/* Enterprise Plan */}
-                                        <div className="border rounded-lg p-4 hover:border-gray-300 transition-colors">
-                                            <div className="mb-3">
-                                                <h3 className="font-semibold text-lg">Enterprise</h3>
-                                                <p className="text-2xl font-bold mt-1">$199<span className="text-sm text-gray-500 font-normal">/month</span></p>
+                                        <div className="border rounded-lg p-6 bg-black text-white">
+                                            <h3 className="text-sm font-semibold text-gray-300 mb-2">ENTERPRISE</h3>
+                                            <div className="mb-4">
+                                                <p className="text-5xl font-bold">$3,999</p>
+                                                <p className="text-sm text-gray-400 mt-1">/month</p>
                                             </div>
-                                            <ul className="space-y-2 text-sm">
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Unlimited AI searches</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Custom integrations</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Real-time monitoring</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>API access</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Dedicated account manager</span>
-                                                </li>
+                                            <ul className="space-y-2 text-sm text-gray-200">
+                                                <li>Hands-on support</li>
+                                                <li>GEO strategy & execution</li>
+                                                <li>Keyword optimization</li>
+                                                <li>Content materials</li>
                                             </ul>
                                         </div>
                                     </div>
