@@ -2517,13 +2517,77 @@ function DashboardProContent({ session }: { session: any }) {
                                     </p>
                                 </div>
 
-                                <div className="bg-white rounded-lg border p-8">
-                                    {/* <PricingTable /> */}
-                                    <div className="text-center py-12">
-                                        <p className="text-gray-600 text-lg">You have Early Access via invite code.</p>
-                                        <p className="text-sm text-gray-500 mt-2">Pricing features will be available soon.</p>
+                                <div className="mb-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3 max-w-4xl mx-auto">
+                                    <p className="text-emerald-800 text-sm font-medium text-center">✓ You have Early Access via invite code</p>
+                                </div>
+
+                                <div className="grid md:grid-cols-4 gap-6 max-w-7xl mx-auto">
+                                    {/* Free Plan */}
+                                    <div className="border rounded-lg p-6 hover:border-gray-300 transition-colors bg-white">
+                                        <h3 className="text-sm font-semibold text-gray-600 mb-2">FREE</h3>
+                                        <div className="mb-4">
+                                            <p className="text-5xl font-bold text-emerald-700">$0</p>
+                                            <p className="text-sm text-gray-500 mt-1">one-time report</p>
+                                        </div>
+                                        <ul className="space-y-2 text-sm text-gray-700">
+                                            <li>One free GEO report</li>
+                                            <li>Brand visibility snapshot</li>
+                                            <li>AI platform overview</li>
+                                        </ul>
+                                    </div>
+
+                                    {/* Starter Plan */}
+                                    <div className="border rounded-lg p-6 hover:border-gray-300 transition-colors bg-white">
+                                        <h3 className="text-sm font-semibold text-gray-600 mb-2">STARTER</h3>
+                                        <div className="mb-4">
+                                            <p className="text-5xl font-bold text-emerald-700">$499</p>
+                                            <p className="text-sm text-gray-500 mt-1">/month</p>
+                                        </div>
+                                        <ul className="space-y-2 text-sm text-gray-700">
+                                            <li>Monthly analytics</li>
+                                            <li>Performance tracking</li>
+                                            <li>Content suggestions</li>
+                                            <li>Email support</li>
+                                        </ul>
+                                    </div>
+
+                                    {/* Growth Plan - Popular */}
+                                    <div className="border-2 border-emerald-500 rounded-lg p-6 relative bg-gradient-to-br from-emerald-50 to-emerald-100">
+                                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                                            <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">POPULAR</span>
+                                        </div>
+                                        <h3 className="text-sm font-semibold text-gray-700 mb-2">GROWTH</h3>
+                                        <div className="mb-4">
+                                            <p className="text-5xl font-bold text-emerald-700">$1,499</p>
+                                            <p className="text-sm text-gray-600 mt-1">/month</p>
+                                        </div>
+                                        <ul className="space-y-2 text-sm text-gray-800">
+                                            <li>Weekly analytics</li>
+                                            <li>Performance tracking</li>
+                                            <li>Content suggestions</li>
+                                            <li>Priority support</li>
+                                        </ul>
+                                    </div>
+
+                                    {/* Enterprise Plan */}
+                                    <div className="border rounded-lg p-6 bg-black text-white">
+                                        <h3 className="text-sm font-semibold text-gray-300 mb-2">ENTERPRISE</h3>
+                                        <div className="mb-4">
+                                            <p className="text-5xl font-bold">$3,999</p>
+                                            <p className="text-sm text-gray-400 mt-1">/month</p>
+                                        </div>
+                                        <ul className="space-y-2 text-sm text-gray-200">
+                                            <li>Hands-on support</li>
+                                            <li>GEO strategy & execution</li>
+                                            <li>Keyword optimization</li>
+                                            <li>Content materials</li>
+                                        </ul>
                                     </div>
                                 </div>
+
+                                <p className="text-center text-sm text-gray-500 mt-8">
+                                    Billing will be enabled soon. Early access users will receive special pricing.
+                                </p>
                             </div>
                         )
                     }
