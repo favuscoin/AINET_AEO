@@ -2302,64 +2302,59 @@ function DashboardProContent({ session }: { session: any }) {
 
                                 {/* Available Plans */}
                                 <div className="bg-white rounded-lg border p-6">
-                                    <h2 className="text-lg font-semibold mb-4">Available Plans</h2>
+                                    <div className="mb-6">
+                                        <h2 className="text-3xl font-bold mb-2">Simple Pricing Plans</h2>
+                                        <p className="text-gray-600">We've designed our pricing to maximize your ROI.</p>
+                                    </div>
                                     <div className="mb-4 bg-emerald-50 border border-emerald-200 rounded-lg p-3">
                                         <p className="text-emerald-800 text-sm font-medium">✓ You have Early Access via invite code</p>
                                     </div>
 
-                                    <div className="grid md:grid-cols-3 gap-4">
+                                    <div className="grid md:grid-cols-4 gap-4">
                                         {/* Free Plan */}
-                                        <div className="border rounded-lg p-4 hover:border-gray-300 transition-colors">
-                                            <div className="mb-3">
-                                                <h3 className="font-semibold text-lg">Free</h3>
-                                                <p className="text-2xl font-bold mt-1">$0<span className="text-sm text-gray-500 font-normal">/month</span></p>
+                                        <div className="border rounded-lg p-6 hover:border-gray-300 transition-colors bg-white">
+                                            <h3 className="text-sm font-semibold text-gray-600 mb-2">FREE</h3>
+                                            <div className="mb-4">
+                                                <p className="text-5xl font-bold text-emerald-700">$0</p>
+                                                <p className="text-sm text-gray-500 mt-1">one-time report</p>
                                             </div>
-                                            <ul className="space-y-2 text-sm">
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>100 AI searches/month</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Basic brand monitoring</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Weekly reports</span>
-                                                </li>
+                                            <ul className="space-y-2 text-sm text-gray-700">
+                                                <li>One free GEO report</li>
+                                                <li>Brand visibility snapshot</li>
+                                                <li>AI platform overview</li>
                                             </ul>
                                         </div>
 
-                                        {/* Pro Plan */}
-                                        <div className="border-2 border-emerald-500 rounded-lg p-4 relative">
+                                        {/* Starter Plan */}
+                                        <div className="border rounded-lg p-6 hover:border-gray-300 transition-colors bg-white">
+                                            <h3 className="text-sm font-semibold text-gray-600 mb-2">STARTER</h3>
+                                            <div className="mb-4">
+                                                <p className="text-5xl font-bold text-emerald-700">$499</p>
+                                                <p className="text-sm text-gray-500 mt-1">/month</p>
+                                            </div>
+                                            <ul className="space-y-2 text-sm text-gray-700">
+                                                <li>Monthly analytics</li>
+                                                <li>Performance tracking</li>
+                                                <li>Content suggestions</li>
+                                                <li>Email support</li>
+                                            </ul>
+                                        </div>
+
+                                        {/* Growth Plan - Popular */}
+                                        <div className="border-2 border-emerald-500 rounded-lg p-6 relative bg-gradient-to-br from-emerald-50 to-emerald-100">
                                             <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                                                <span className="bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">POPULAR</span>
+                                                <span className="bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">POPULAR</span>
                                             </div>
-                                            <div className="mb-3">
-                                                <h3 className="font-semibold text-lg">Pro</h3>
-                                                <p className="text-2xl font-bold mt-1">$49<span className="text-sm text-gray-500 font-normal">/month</span></p>
+                                            <h3 className="text-sm font-semibold text-gray-700 mb-2">GROWTH</h3>
+                                            <div className="mb-4">
+                                                <p className="text-5xl font-bold text-emerald-700">$1,499</p>
+                                                <p className="text-sm text-gray-600 mt-1">/month</p>
                                             </div>
-                                            <ul className="space-y-2 text-sm">
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>1,000 AI searches/month</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Advanced analytics</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Daily reports</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Competitor tracking</span>
-                                                </li>
-                                                <li className="flex items-start">
-                                                    <CheckCircle className="h-4 w-4 text-emerald-500 mr-2 flex-shrink-0 mt-0.5" />
-                                                    <span>Priority support</span>
-                                                </li>
+                                            <ul className="space-y-2 text-sm text-gray-800">
+                                                <li>Weekly analytics</li>
+                                                <li>Performance tracking</li>
+                                                <li>Content suggestions</li>
+                                                <li>Priority support</li>
                                             </ul>
                                         </div>
 
