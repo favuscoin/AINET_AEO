@@ -144,6 +144,14 @@ function DashboardProContent({ session }: { session: any }) {
     const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    // Sync URL search params with activeSection
+    useEffect(() => {
+        const section = searchParams.get('section');
+        if (section) {
+            setActiveSection(section);
+        }
+    }, [searchParams]);
+
     // Chat queries and mutations
     const { data: conversations } = useConversations();
     const { data: currentConversation } = useConversation(selectedConversationId);
