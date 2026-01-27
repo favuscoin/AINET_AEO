@@ -3,6 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
+import { Footer } from '@/components/footer';
 
 function LoginForm() {
   const [inviteCode, setInviteCode] = useState('');
