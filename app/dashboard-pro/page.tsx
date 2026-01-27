@@ -294,7 +294,10 @@ function DashboardProContent({ session }: { session: any }) {
                             </div>
                             <div className="space-y-1">
                                 <button
-                                    onClick={() => setActiveSection('agent')}
+                                    onClick={() => {
+                                        setActiveSection('agent');
+                                        setMobileMenuOpen(false);
+                                    }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'agent'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -304,7 +307,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Agent Analytics
                                 </button>
                                 <button
-                                    onClick={() => setActiveSection('overview')}
+                                    onClick={() => { setActiveSection('overview'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'overview'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -314,7 +317,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Overview
                                 </button>
                                 <button
-                                    onClick={() => setActiveSection('brand-monitor')}
+                                    onClick={() => { setActiveSection('brand-monitor'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'brand-monitor'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -324,7 +327,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Brand Monitor
                                 </button>
                                 <button
-                                    onClick={() => setActiveSection('prompts')}
+                                    onClick={() => { setActiveSection('prompts'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'prompts'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -334,7 +337,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Prompt Volumes
                                 </button>
                                 <button
-                                    onClick={() => setActiveSection('insights')}
+                                    onClick={() => { setActiveSection('insights'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'insights'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -354,7 +357,7 @@ function DashboardProContent({ session }: { session: any }) {
                             </div>
                             <div className="space-y-1">
                                 <button
-                                    onClick={() => setActiveSection('opportunities')}
+                                    onClick={() => { setActiveSection('opportunities'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'opportunities'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -367,7 +370,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded">Beta</span>
                                 </button>
                                 <button
-                                    onClick={() => setActiveSection('content')}
+                                    onClick={() => { setActiveSection('content'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'content'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -377,7 +380,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Content
                                 </button>
                                 <button
-                                    onClick={() => setActiveSection('workflows')}
+                                    onClick={() => { setActiveSection('workflows'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'workflows'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -390,7 +393,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded">Beta</span>
                                 </button>
                                 <button
-                                    onClick={() => setActiveSection('brand')}
+                                    onClick={() => { setActiveSection('brand'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'brand'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -409,7 +412,7 @@ function DashboardProContent({ session }: { session: any }) {
                             </div>
                             <div className="space-y-1">
                                 <button
-                                    onClick={() => setActiveSection('settings')}
+                                    onClick={() => { setActiveSection('settings'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'settings'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -419,7 +422,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Settings
                                 </button>
                                 <button
-                                    onClick={() => setActiveSection('pricing')}
+                                    onClick={() => { setActiveSection('pricing'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'pricing'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -429,7 +432,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Pricing
                                 </button>
                                 <button
-                                    onClick={() => setActiveSection('help')}
+                                    onClick={() => { setActiveSection('help'); setMobileMenuOpen(false); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'help'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
