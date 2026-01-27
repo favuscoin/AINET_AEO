@@ -38,7 +38,8 @@ import {
     Wallet,
     Rocket,
     Activity,
-    Users
+    Users,
+    Menu
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 // import ProductChangeDialog from '@/components/autumn/product-change-dialog';
@@ -136,6 +137,7 @@ function DashboardProContent({ session }: { session: any }) {
     // Removed Autumn hooks for invite-only access
     const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
     const [activeSection, setActiveSection] = useState('agent');
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     // Chat state
     const [input, setInput] = useState('');
@@ -258,8 +260,24 @@ function DashboardProContent({ session }: { session: any }) {
 
     return (
         <div className="flex h-screen bg-gray-50 pt-16">
-            {/* Left Sidebar */}
-            <div className="w-64 bg-white flex flex-col">
+            {/* Mobile Menu Button */}
+            <button
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden fixed top-20 left-4 z-50 p-2 bg-white rounded-lg shadow-md border"
+            >
+                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+
+            {/* Mobile Menu Overlay */}
+            {mobileMenuOpen && (
+                <div
+                    className="lg:hidden fixed inset-0 bg-black/50 z-40 pt-16"
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+            )}
+
+            {/* Left Sidebar - Hidden on mobile, visible on desktop */}
+            <div className={`${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative w-64 bg-white flex flex-col z-40 transition-transform duration-300 ease-in-out h-full`}>
                 {/* Logo/Branding Area */}
                 <div className="p-4 border-b border-r">
                     {/* Empty space for logo or branding */}
