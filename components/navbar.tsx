@@ -86,8 +86,75 @@ export function Navbar() {
             {mobileMenuOpen && (
               <div className="md:hidden mt-4 bg-white rounded-2xl p-6 shadow-lg border border-gray-100">
                 {/* Mobile Menu Content */}
-                <div className="px-4 py-6 space-y-4">
-                </div>
+                {pathname === '/dashboard-pro' ? (
+                  <div className="space-y-6">
+                    {/* Analytics Section */}
+                    <div>
+                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Analytics
+                      </div>
+                      <div className="space-y-1">
+                        <Link href="/dashboard-pro?section=agent" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Agent Analytics
+                        </Link>
+                        <Link href="/dashboard-pro?section=overview" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Overview
+                        </Link>
+                        <Link href="/dashboard-pro?section=brand-monitor" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Brand Monitor
+                        </Link>
+                        <Link href="/dashboard-pro?section=prompts" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Prompt Volumes
+                        </Link>
+                        <Link href="/dashboard-pro?section=insights" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Answer Engine Insights
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Action Section */}
+                    <div>
+                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Action
+                      </div>
+                      <div className="space-y-1">
+                        <Link href="/dashboard-pro?section=opportunities" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Opportunities <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded ml-2">Beta</span>
+                        </Link>
+                        <Link href="/dashboard-pro?section=content" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Content
+                        </Link>
+                        <Link href="/dashboard-pro?section=workflows" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Workflows <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded ml-2">Beta</span>
+                        </Link>
+                        <Link href="/dashboard-pro?section=brand" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Brand
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Support Section */}
+                    <div>
+                      <div className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                        Support
+                      </div>
+                      <div className="space-y-1">
+                        <Link href="/dashboard-pro?section=settings" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Settings
+                        </Link>
+                        <Link href="/dashboard-pro?section=pricing" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Pricing
+                        </Link>
+                        <Link href="/dashboard-pro?section=help" className="block px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                          Help
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="px-4 py-6 space-y-4">
+                  </div>
+                )}
               </div>
             )}
           </nav>

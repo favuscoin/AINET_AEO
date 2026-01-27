@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState, useRef } from 'react';
 import {
     TrendingUp,
@@ -134,10 +134,10 @@ const negativePrompts = [
 // Separate component that uses Autumn hooks
 function DashboardProContent({ session }: { session: any }) {
     const router = useRouter();
+    const searchParams = useSearchParams();
     // Removed Autumn hooks for invite-only access
     const [loadingProductId, setLoadingProductId] = useState<string | null>(null);
     const [activeSection, setActiveSection] = useState('agent');
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     // Chat state
     const [input, setInput] = useState('');
@@ -260,24 +260,8 @@ function DashboardProContent({ session }: { session: any }) {
 
     return (
         <div className="flex h-screen bg-gray-50 pt-16">
-            {/* Mobile Menu Button */}
-            <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden fixed top-20 left-4 z-50 p-2 bg-white rounded-lg shadow-md border"
-            >
-                {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-
-            {/* Mobile Menu Overlay */}
-            {mobileMenuOpen && (
-                <div
-                    className="lg:hidden fixed inset-0 bg-black/50 z-40 pt-16"
-                    onClick={() => setMobileMenuOpen(false)}
-                />
-            )}
-
             {/* Left Sidebar - Hidden on mobile, visible on desktop */}
-            <div className={`${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:relative w-64 bg-white flex flex-col z-40 transition-transform duration-300 ease-in-out h-full`}>
+            <div className="hidden lg:flex w-64 bg-white flex-col">
                 {/* Logo/Branding Area */}
                 <div className="p-4 border-b border-r">
                     {/* Empty space for logo or branding */}
@@ -307,7 +291,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Agent Analytics
                                 </button>
                                 <button
-                                    onClick={() => { setActiveSection('overview'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('overview'); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'overview'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -317,7 +301,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Overview
                                 </button>
                                 <button
-                                    onClick={() => { setActiveSection('brand-monitor'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('brand-monitor'); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'brand-monitor'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -327,7 +311,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Brand Monitor
                                 </button>
                                 <button
-                                    onClick={() => { setActiveSection('prompts'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('prompts'); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'prompts'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -337,7 +321,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Prompt Volumes
                                 </button>
                                 <button
-                                    onClick={() => { setActiveSection('insights'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('insights'); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'insights'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -357,7 +341,7 @@ function DashboardProContent({ session }: { session: any }) {
                             </div>
                             <div className="space-y-1">
                                 <button
-                                    onClick={() => { setActiveSection('opportunities'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('opportunities'); }}
                                     className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'opportunities'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -370,7 +354,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded">Beta</span>
                                 </button>
                                 <button
-                                    onClick={() => { setActiveSection('content'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('content'); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'content'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -380,7 +364,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Content
                                 </button>
                                 <button
-                                    onClick={() => { setActiveSection('workflows'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('workflows'); }}
                                     className={`w-full flex items-center justify-between px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'workflows'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -393,7 +377,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded">Beta</span>
                                 </button>
                                 <button
-                                    onClick={() => { setActiveSection('brand'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('brand'); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'brand'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -412,7 +396,7 @@ function DashboardProContent({ session }: { session: any }) {
                             </div>
                             <div className="space-y-1">
                                 <button
-                                    onClick={() => { setActiveSection('settings'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('settings'); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'settings'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -422,7 +406,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Settings
                                 </button>
                                 <button
-                                    onClick={() => { setActiveSection('pricing'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('pricing'); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'pricing'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
@@ -432,7 +416,7 @@ function DashboardProContent({ session }: { session: any }) {
                                     Pricing
                                 </button>
                                 <button
-                                    onClick={() => { setActiveSection('help'); setMobileMenuOpen(false); }}
+                                    onClick={() => { setActiveSection('help'); }}
                                     className={`w-full flex items-center px-3 py-2 text-sm rounded-lg transition-colors ${activeSection === 'help'
                                         ? 'bg-gray-100 text-gray-900 font-medium'
                                         : 'text-gray-600 hover:bg-gray-50'
