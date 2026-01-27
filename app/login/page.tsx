@@ -66,7 +66,7 @@ function LoginForm() {
       </div>
 
       {/* Right side - Form */}
-      <div className="flex-1 flex items-start pt-16 lg:items-center lg:pt-0 justify-center px-4 sm:px-6 lg:px-8 bg-white">
+      <div className="flex-1 flex items-start pt-32 lg:items-center lg:pt-0 justify-center px-4 sm:px-6 lg:px-8 bg-white">
         <div className="max-w-md w-full space-y-8">
           <div>
             <div className="lg:hidden mb-8 flex justify-center">
